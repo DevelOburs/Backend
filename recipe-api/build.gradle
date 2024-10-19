@@ -1,0 +1,7 @@
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'mysql:mysql-connector-java:8.0.33' // Replace with the latest version
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

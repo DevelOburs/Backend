@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: recipe-api
+          uri: lb://recipe-api
+          predicates:
+            - Path=/api/recipes/**
+
+server:
+  port: 8081 # Port for api-gateway service
+
