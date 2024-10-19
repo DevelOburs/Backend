@@ -1,0 +1,22 @@
+version: '1'
+services:
+  fridge-db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: fridge
+      MYSQL_USER: fridge
+      MYSQL_PASSWORD: fridge_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - fridge-db-data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+
+volumes:
+  fridge-db-data:
