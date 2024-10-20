@@ -4,4 +4,7 @@ dependencies {
 	implementation 'mysql:mysql-connector-java:8.0.33' // Replace with the latest version
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	compileOnly 'org.projectlombok:lombok:1.18.20'
+	annotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
