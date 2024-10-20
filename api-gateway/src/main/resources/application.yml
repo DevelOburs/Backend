@@ -10,5 +10,5 @@ spring:
             - Path=/api/recipes/**
 
 server:
-  port: 8081 # Port for api-gateway service
+  port: 8080 # Port for api-gateway service
 
