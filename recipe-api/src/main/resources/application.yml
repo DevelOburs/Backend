@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: recipe-api
+
+server:
+  port: 8081 # Port for recipe-api service

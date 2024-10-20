@@ -5,3 +5,10 @@ CREATE TABLE user (
                        email VARCHAR(255) NOT NULL,
                        password VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE recipe (
+                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(255) NOT NULL,
+                        description TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
