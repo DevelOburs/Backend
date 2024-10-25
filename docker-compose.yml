@@ -1,4 +1,3 @@
-version: '1'
 services:
   fridge-db:
     image: mysql
