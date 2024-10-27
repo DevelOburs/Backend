@@ -2,8 +2,7 @@ rootProject.name = 'fridgify'
 
 include 'api-gateway'
 include 'user-api'
-include 'authentication-api'
+include 'auth-api'
 include 'recipe-api'
-include 'admin-api'
-include 'interaction-api'
-include 'notification-api'
+include 'shared'
+

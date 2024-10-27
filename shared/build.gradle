@@ -1,0 +1,31 @@
+plugins {
+	id 'java-library'
+	id 'maven-publish'
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+bootJar { enabled = false }
+jar { enabled = true}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+			groupId = 'com.fridgify' // Set your desired group ID
+			artifactId = 'shared' // Set your desired artifact ID
+			version = '1.0.0' // Set your desired version
+		}
+	}
+}
+
+// Ensure repositories to publish to are set
+repositories {
+	mavenLocal()
+}
