@@ -3,4 +3,4 @@ spring:
     name: auth-api
 
 server:
-  port: 8080 # Port for auth-api service
+  port: 8083 # Port for auth-api service
