@@ -1,0 +1,24 @@
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	implementation 'com.fridgify:shared:1.0.0' // Use the published library
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	compileOnly 'org.projectlombok:lombok:1.18.20'
+	annotationProcessor 'org.projectlombok:lombok:1.18.20'
+}
+
+// Import Spring Cloud BOM to manage Spring Cloud dependencies
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.3" // Use the latest compatible version
+	}
+}
+
+repositories {
+	mavenLocal() // This allows you to use your published library
+	mavenCentral()
+}
