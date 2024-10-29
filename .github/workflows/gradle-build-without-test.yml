@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
+    needs: build-publish-shared
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
+    needs: build
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
