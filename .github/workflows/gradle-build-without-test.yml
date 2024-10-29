@@ -15,11 +15,9 @@ on:
 
 jobs:
   build-publish-shared:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
@@ -33,12 +31,19 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
-      - name: Build shared library
-        run: cd shared/ && ./gradlew build
-
-      - name: Publish shared library
+      - name: Publish shared library to Maven local
         run: ./gradlew publishToMavenLocal -Dmaven.repo.local=maven-repo
 
+      # List all files in maven-repo to check if any files were created there
+      - name: Debug Maven Repo Directory
+        run: |
+          echo "Listing files in custom maven-repo directory:"
+          ls -R maven-repo || echo "No files in maven-repo"
+          
+          echo "Listing files in default ~/.m2/repository:"
+          ls -R ~/.m2/repository || echo "No files in ~/.m2/repository"
+
+      # Upload either maven-repo or default ~/.m2/repository based on output location
       - name: Upload Maven local repository
         uses: actions/upload-artifact@v3
         with:
@@ -46,7 +51,6 @@ jobs:
           path: maven-repo
 
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
