@@ -23,12 +23,12 @@ spring:
         - id: recipe-api
           uri: lb://recipe-api
           predicates:
-            - Path=/recipes-api/**
+            - Path=/recipe-api/**
 
         - id: user-api
           uri: lb://user-api
           predicates:
-            - Path=/users-api/**
+            - Path=/user-api/**
 
         - id: admin-api
           uri: lb://admin-api
