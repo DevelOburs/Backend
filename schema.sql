@@ -6,10 +6,11 @@ CREATE TABLE `ingredient` (
 );
 
 -- Recipes table to store recipe information
-CREATE TABLE `recipes` (
-    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `name` VARCHAR(100) NOT NULL,
-    `extras` BIGINT
+CREATE TABLE `recipe` (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Recipe ingredients table to store the ingredients for each recipe
@@ -34,7 +35,7 @@ CREATE TABLE `fridge_ingredient` (
 );
 
 -- Users table to store user information
-CREATE TABLE `users` (
+CREATE TABLE `user` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `fridge_id` BIGINT UNSIGNED NULL, -- Allow NULL values here
     `name` VARCHAR(100) NOT NULL,
@@ -47,7 +48,7 @@ CREATE TABLE `users` (
 );
 
 -- User app settings table
-CREATE TABLE `user_app_settings` (
+CREATE TABLE `user_app_setting` (
     `user_id` BIGINT UNSIGNED NOT NULL,
     `extras` BIGINT,
     PRIMARY KEY (`user_id`)
@@ -61,14 +62,14 @@ CREATE TABLE `user_allergen` (
 );
 
 -- User favorite recipes table to store user's favorite recipes
-CREATE TABLE `user_favorite_recipes` (
+CREATE TABLE `user_favorite_recipe` (
     `user_id` BIGINT UNSIGNED NOT NULL,
     `recipe_id` BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`user_id`, `recipe_id`)
 );
 
 -- Recipe comments table to store comments made by users on recipes
-CREATE TABLE `recipe_comments` (
+CREATE TABLE `recipe_comment` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `recipe_id` BIGINT UNSIGNED NOT NULL,
     `user_id` BIGINT UNSIGNED NOT NULL,
@@ -77,7 +78,7 @@ CREATE TABLE `recipe_comments` (
 );
 
 -- Recipe like table to store likes on recipes by users
-CREATE TABLE `recipe_likes` (
+CREATE TABLE `recipe_like` (
     `recipe_id` BIGINT UNSIGNED NOT NULL,
     `user_id` BIGINT UNSIGNED NOT NULL,
     `liked` BOOLEAN DEFAULT TRUE,
@@ -85,7 +86,7 @@ CREATE TABLE `recipe_likes` (
 );
 
 -- User recipe table to store recipes created by users
-CREATE TABLE `user_recipes` (
+CREATE TABLE `user_recipe` (
     `user_id` BIGINT UNSIGNED NOT NULL,
     `recipe_id` BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`user_id`, `recipe_id`)
