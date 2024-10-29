@@ -129,7 +129,7 @@ INSERT INTO `recipe_ingredient` (`recipe_id`, `ingredient_id`, `quantity`) VALUE
     (61783, 73, '2'), (61783, 87, '3');
 
 
-INSERT INTO `recipes` (`id`, `name`) VALUES
+INSERT INTO `recipe` (`id`, `name`) VALUES
     (70553, 'Banana Spice Cookies'),
     (191583, 'Company Cloud Biscuits'),
     (164504, 'Ultimate Chocolate Chocolate Chip Cookies'),
@@ -149,11 +149,11 @@ INSERT INTO `fridge_ingredient` (`fridge_id`, `ingredient_id`) VALUES
     (1, 5);  -- Fridge 1 contains Eggs
 
 -- Insert data into the users table with a fridge ID reference
-INSERT INTO `users` (`fridge_id`, `name`, `email`, `password`, `phone_number`) VALUES 
+INSERT INTO `user` (`fridge_id`, `name`, `email`, `password`, `phone_number`) VALUES
     (1, 'John Doe', 'johndoe@example.com', 'password123', '1234567890');
 
 -- Insert data into user_app_settings for the user
-INSERT INTO `user_app_settings` (`user_id`, `extras`) VALUES 
+INSERT INTO `user_app_setting` (`user_id`, `extras`) VALUES
     (1, NULL);
 
 -- Insert data into user_allergen to specify any allergens for the user
@@ -161,17 +161,17 @@ INSERT INTO `user_allergen` (`user_id`, `ingredient_id`) VALUES
     (1, 3);  -- User John Doe is allergic to Salt
 
 -- Insert data into user_favorite_recipes to add a favorite recipe for the user
-INSERT INTO `user_favorite_recipes` (`user_id`, `recipe_id`) VALUES 
+INSERT INTO `user_favorite_recipe` (`user_id`, `recipe_id`) VALUES
     (1, 1);  -- John Doe's favorite recipe is Chocolate Chip Cookies
 
 -- Insert a comment in recipe_comments for a recipe
-INSERT INTO `recipe_comments` (`recipe_id`, `user_id`, `comment`) VALUES 
+INSERT INTO `recipe_comment` (`recipe_id`, `user_id`, `comment`) VALUES
     (1, 1, 'These cookies are amazing!');
 
 -- Insert data into recipe_likes to track recipe likes
-INSERT INTO `recipe_likes` (`recipe_id`, `user_id`, `liked`) VALUES 
+INSERT INTO `recipe_like` (`recipe_id`, `user_id`, `liked`) VALUES
     (1, 1, TRUE);  -- John Doe likes the Chocolate Chip Cookies recipe
 
 -- Insert data into user_recipes to assign a recipe to a user
-INSERT INTO `user_recipes` (`user_id`, `recipe_id`) VALUES 
+INSERT INTO `user_recipe` (`user_id`, `recipe_id`) VALUES
     (1, 2);  -- John Doe created the Banana Bread recipe
