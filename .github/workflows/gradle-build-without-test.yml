@@ -37,13 +37,13 @@ jobs:
         run: cd shared/ && ./gradlew build
 
       - name: Publish shared library
-        run: ./gradlew publishToMavenLocal
+        run: ./gradlew publishToMavenLocal -Dmaven.repo.local=maven-repo
 
       - name: Upload Maven local repository
         uses: actions/upload-artifact@v3
         with:
           name: maven-local-repo
-          path: ~/.m2
+          path: maven-repo
 
   build:
 
@@ -63,7 +63,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: maven-local-repo
-          path: ~/.m2
+          path: maven-repo
 
       # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
       # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
