@@ -12,6 +12,10 @@ ALTER TABLE recipe_likes RENAME TO recipe_like;
 
 ALTER TABLE user_recipes RENAME TO user_recipe;
 
+ALTER TABLE recipe ADD COLUMN description TEXT;
+
+ALTER TABLE recipe ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
 
 
 

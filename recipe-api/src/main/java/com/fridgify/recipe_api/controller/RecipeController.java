@@ -16,12 +16,10 @@ public class RecipeController {
 
     private final RecipeService recipeService;
 
-    // Inject the RecipeService using constructor-based dependency injection
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
     }
 
-    // Get all recipes
     @GetMapping
     public ResponseEntity<List<RecipeDTO>> getAllRecipes() {
         List<Recipe> recipes = recipeService.getAllRecipes();
@@ -35,7 +33,6 @@ public class RecipeController {
         return ResponseEntity.ok(recipeDTOs);
     }
 
-    // Get recipe by ID
     @GetMapping("/{id}")
     public ResponseEntity<RecipeDTO> getRecipeById(@PathVariable Long id) {
         Recipe recipe = recipeService.getRecipeById(id);
@@ -47,7 +44,6 @@ public class RecipeController {
         return ResponseEntity.ok(recipeDTO);
     }
 
-    // Create a new recipe
     @PostMapping
     public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO) {
         Recipe newRecipe = recipeDTO.toModel(); // Convert RecipeDTO to Recipe
@@ -62,7 +58,6 @@ public class RecipeController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    // Update an existing recipe
     @PutMapping("/{id}")
     public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable Long id, @RequestBody RecipeDTO recipeDTO) {
         Recipe updatedRecipe = Recipe.builder()
@@ -81,7 +76,6 @@ public class RecipeController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    // Delete a recipe by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
         recipeService.deleteRecipe(id);

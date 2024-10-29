@@ -7,9 +7,9 @@ CREATE TABLE `ingredient` (
 
 -- Recipes table to store recipe information
 CREATE TABLE `recipes` (
-    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `name` VARCHAR(100) NOT NULL,
-    `extras` BIGINT
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Recipe ingredients table to store the ingredients for each recipe
