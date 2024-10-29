@@ -1,8 +1,8 @@
 rootProject.name = 'fridgify'
 
 include 'api-gateway'
+include 'api-eureka'
 include 'user-api'
 include 'auth-api'
 include 'recipe-api'
 include 'shared'
-
