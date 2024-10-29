@@ -5,11 +5,17 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'com.fridgify:shared:1.0.0' // Use the published library
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	compileOnly 'org.projectlombok:lombok:1.18.20'
 	annotationProcessor 'org.projectlombok:lombok:1.18.20'
+}
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.3" // Use the latest compatible version
+	}
 }
 
 repositories {
