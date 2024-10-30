@@ -9,12 +9,11 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/admin-api" />
+            <option value="$PROJECT_DIR$/api-eureka" />
             <option value="$PROJECT_DIR$/api-gateway" />
-            <option value="$PROJECT_DIR$/authentication-api" />
-            <option value="$PROJECT_DIR$/interaction-api" />
-            <option value="$PROJECT_DIR$/notification-api" />
+            <option value="$PROJECT_DIR$/auth-api" />
             <option value="$PROJECT_DIR$/recipe-api" />
+            <option value="$PROJECT_DIR$/shared" />
             <option value="$PROJECT_DIR$/user-api" />
           </set>
         </option>
