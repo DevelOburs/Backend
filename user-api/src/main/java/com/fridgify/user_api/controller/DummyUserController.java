@@ -30,5 +30,10 @@ public class DummyUserController {
         }
         return ResponseEntity.ok(user);
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("User API is working");
+    }
 }
 
