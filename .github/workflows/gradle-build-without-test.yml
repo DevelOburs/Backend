@@ -23,7 +23,7 @@ jobs:
 
       # Configure Gradle with caching for dependencies
       - name: Cache Gradle dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.gradle/caches
           key: gradle-cache-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
@@ -39,7 +39,7 @@ jobs:
 
       # Cache Maven local repository to avoid re-publishing the shared library
       - name: Cache Maven local repository
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: maven-local-${{ hashFiles('shared/**/*.java') }}
