@@ -17,7 +17,7 @@ public class UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-    
+
     public User findByUsername(String username) {
         Optional<User> user = userRepository.findByUsername(username);
         return user.orElse(null);
@@ -49,5 +49,7 @@ public class UserService {
             return "Login failed";
         }
     }
+
+
 }
 

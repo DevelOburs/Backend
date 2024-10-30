@@ -1,10 +1,10 @@
 package com.fridgify.auth_api.controller;
 
+import com.fridgify.auth_api.client.UserServiceClient;
+import com.fridgify.auth_api.common.UserDTO;
 import com.fridgify.auth_api.dto.LoginRequest;
 import com.fridgify.auth_api.dto.RegisterRequest;
-import com.fridgify.auth_api.dto.UserResponse;
 import com.fridgify.shared.jwt.util.JwtUtil;
-import com.fridgify.auth_api.client.DummyUserServiceClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,15 +15,13 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final JwtUtil jwtUtil;
-
     private final BCryptPasswordEncoder passwordEncoder;
+    private final UserServiceClient userServiceClient;
 
-    private final DummyUserServiceClient userServiceClient;  // Feign client to call user service
-
-    public AuthController(JwtUtil jwtUtil, BCryptPasswordEncoder passwordEncoder, DummyUserServiceClient userServiceClient) {
+    public AuthController(JwtUtil jwtUtil, BCryptPasswordEncoder passwordEncoder, UserServiceClient userServiceClient1) {
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
-        this.userServiceClient = userServiceClient;
+        this.userServiceClient = userServiceClient1;
     }
 
     // Register endpoint
@@ -36,15 +34,21 @@ public class AuthController {
     // Login endpoint
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        // Retrieve user from user-service
-        UserResponse user = userServiceClient.getUserByUsername(loginRequest.getUsername());
+        UserDTO user = userServiceClient.getUserByUsername(loginRequest.getUser().getUsername());
 
-        if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid credentials");
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist");
         }
 
-        // Generate JWT token
-        return ResponseEntity.status(HttpStatus.OK).body(jwtUtil.generateToken(user.getUsername()));
+
+        if(userServiceClient.loginUser(user).equals("Login successful")){
+            // Generate JWT token
+            String token = jwtUtil.generateToken(user.getUsername());
+            return ResponseEntity.ok(token);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
+        }
+
     }
 
 }

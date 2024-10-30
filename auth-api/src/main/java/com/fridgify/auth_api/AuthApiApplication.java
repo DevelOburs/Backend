@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.fridgify", "com.fridgify.shared.jwt"}) // Add the package where JwtUtil is located
+@ComponentScan(basePackages = {"com.fridgify.auth_api", "com.fridgify.shared.jwt"}) // Add the package where JwtUtil is located
 @EnableFeignClients
 public class AuthApiApplication {
 
