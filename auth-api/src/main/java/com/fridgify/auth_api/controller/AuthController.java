@@ -26,24 +26,24 @@ public class AuthController {
 
     // Register endpoint
     @PostMapping("/register")
-    public String register(@RequestBody RegisterRequest registerRequest) {
-        // Forward registration request to user-service
-        return userServiceClient.registerUser(registerRequest);
+    public String register(@RequestBody UserDTO userDTO) {
+
+        return userServiceClient.registerUser(userDTO);
     }
 
     // Login endpoint
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        UserDTO user = userServiceClient.getUserByUsername(loginRequest.getUser().getUsername());
+        UserDTO userDTO = userServiceClient.getUserByUsername(loginRequest.getUsername()).getBody();
 
-        if (user == null) {
+        if (userDTO == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist");
         }
 
 
-        if(userServiceClient.loginUser(user).equals("Login successful")){
+        if(userServiceClient.loginUser(userDTO).equals("Login successful")){
             // Generate JWT token
-            String token = jwtUtil.generateToken(user.getUsername());
+            String token = jwtUtil.generateToken(userDTO.getUsername());
             return ResponseEntity.ok(token);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");

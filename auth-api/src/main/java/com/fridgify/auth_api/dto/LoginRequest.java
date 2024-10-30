@@ -5,7 +5,8 @@ import lombok.Getter;
 
 @Getter
 public class LoginRequest {
-    private UserDTO user;
-    // Constructors, Getters, Setters
+    private String username;
+    private String email;
+    private String password;
 }
 

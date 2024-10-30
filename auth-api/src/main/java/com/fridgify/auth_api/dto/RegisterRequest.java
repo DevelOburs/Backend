@@ -6,6 +6,5 @@ import lombok.Data;
 @Data
 public class RegisterRequest {
     // DTO for registration requests
-    private UserDTO user;
 
 }

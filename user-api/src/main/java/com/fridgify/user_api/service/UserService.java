@@ -3,6 +3,7 @@ package com.fridgify.user_api.service;
 import com.fridgify.user_api.dto.UserDTO;
 import com.fridgify.user_api.model.User;
 import com.fridgify.user_api.repository.UserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +19,15 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User findByUsername(String username) {
+    public UserDTO findByUsername(String username) {
         Optional<User> user = userRepository.findByUsername(username);
-        return user.orElse(null);
+        if(user.isPresent()) {
+            return UserDTO.builder()
+                    .username(user.get().getUsername())
+                    .password(passwordEncoder.encode(user.get().getPassword()))
+                    .build();
+        }
+        return null;
     }
 
     public String registerUser(UserDTO userDTO){
