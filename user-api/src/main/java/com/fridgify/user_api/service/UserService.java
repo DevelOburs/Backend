@@ -3,7 +3,6 @@ package com.fridgify.user_api.service;
 import com.fridgify.user_api.dto.UserDTO;
 import com.fridgify.user_api.model.User;
 import com.fridgify.user_api.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,12 +44,14 @@ public class UserService {
     }
 
     public String loginUser(UserDTO userDTO){
-        if(userRepository.findByUsername(userDTO.getUsername()).isEmpty()){
+        Optional<User> user_with_username = userRepository.findByUsername(userDTO.getUsername());
+        Optional<User> user_with_email = userRepository.findByEmailIgnoreCase(userDTO.getEmail());
+        if(user_with_username.isEmpty() && user_with_email.isEmpty()){
             return "User does not exist";
         }
 
-        User user = userRepository.findByUsername(userDTO.getUsername()).get();
-        if(passwordEncoder.matches(userDTO.getPassword(), user.getPassword())){
+        Optional<User> existing_user = user_with_email.isPresent() ? user_with_email : user_with_username;
+        if(passwordEncoder.matches(userDTO.getPassword(), existing_user.get().getPassword())){
             return "Login successful";
         } else {
             return "Login failed";

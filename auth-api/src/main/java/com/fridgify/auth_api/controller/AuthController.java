@@ -3,7 +3,6 @@ package com.fridgify.auth_api.controller;
 import com.fridgify.auth_api.client.UserServiceClient;
 import com.fridgify.auth_api.common.UserDTO;
 import com.fridgify.auth_api.dto.LoginRequest;
-import com.fridgify.auth_api.dto.RegisterRequest;
 import com.fridgify.shared.jwt.util.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,24 +25,18 @@ public class AuthController {
 
     // Register endpoint
     @PostMapping("/register")
-    public String register(@RequestBody UserDTO userDTO) {
-
+    public ResponseEntity<String> register(@RequestBody UserDTO userDTO) {
         return userServiceClient.registerUser(userDTO);
     }
 
     // Login endpoint
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        UserDTO userDTO = userServiceClient.getUserByUsername(loginRequest.getUsername()).getBody();
+        ResponseEntity<String> response = userServiceClient.loginUser(loginRequest);
 
-        if (userDTO == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist");
-        }
-
-
-        if(userServiceClient.loginUser(userDTO).equals("Login successful")){
+        if(response.getStatusCode() == HttpStatus.OK){
             // Generate JWT token
-            String token = jwtUtil.generateToken(userDTO.getUsername());
+            String token = jwtUtil.generateToken(loginRequest.getUsername());
             return ResponseEntity.ok(token);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
