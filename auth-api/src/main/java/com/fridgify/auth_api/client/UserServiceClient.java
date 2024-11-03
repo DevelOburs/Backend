@@ -1,7 +1,7 @@
 package com.fridgify.auth_api.client;
 
 import com.fridgify.auth_api.common.UserDTO;
-import com.fridgify.auth_api.dto.RegisterRequest;
+import com.fridgify.auth_api.dto.LoginRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface UserServiceClient {
 
     @PostMapping("/user-api/register")
-    String registerUser(@RequestBody UserDTO userDTO);
+    ResponseEntity<String> registerUser(@RequestBody UserDTO userDTO);
 
     @PostMapping("/user-api/login")
-    String loginUser(@RequestBody UserDTO userDTO);
+    ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequestDTO);
 
     @GetMapping("/user-api/find/{username}")
     ResponseEntity<UserDTO> getUserByUsername(@PathVariable("username") String username);

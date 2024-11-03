@@ -1,6 +1,5 @@
 package com.fridgify.user_api.controller;
 import com.fridgify.user_api.dto.UserDTO;
-import com.fridgify.user_api.model.User;
 import com.fridgify.user_api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,7 @@ public class UserController {
         if ("User registered successfully".equals(response)) {
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 

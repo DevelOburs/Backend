@@ -1,6 +1,5 @@
 package com.fridgify.auth_api.dto;
 
-import com.fridgify.auth_api.common.UserDTO;
 import lombok.Getter;
 
 @Getter
