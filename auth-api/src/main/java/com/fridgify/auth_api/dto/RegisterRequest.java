@@ -1,11 +1,10 @@
 package com.fridgify.auth_api.dto;
 
+import com.fridgify.auth_api.common.UserDTO;
 import lombok.Data;
 
 @Data
 public class RegisterRequest {
-    private String username;
-    private String password;
+    // DTO for registration requests
 
-    // Constructors, Getters, Setters
 }
