@@ -1,10 +1,9 @@
 package com.fridgify.auth_api.controller;
 
+import com.fridgify.auth_api.client.UserServiceClient;
+import com.fridgify.auth_api.common.UserDTO;
 import com.fridgify.auth_api.dto.LoginRequest;
-import com.fridgify.auth_api.dto.RegisterRequest;
-import com.fridgify.auth_api.dto.UserResponse;
 import com.fridgify.shared.jwt.util.JwtUtil;
-import com.fridgify.auth_api.client.DummyUserServiceClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,36 +14,34 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final JwtUtil jwtUtil;
-
     private final BCryptPasswordEncoder passwordEncoder;
+    private final UserServiceClient userServiceClient;
 
-    private final DummyUserServiceClient userServiceClient;  // Feign client to call user service
-
-    public AuthController(JwtUtil jwtUtil, BCryptPasswordEncoder passwordEncoder, DummyUserServiceClient userServiceClient) {
+    public AuthController(JwtUtil jwtUtil, BCryptPasswordEncoder passwordEncoder, UserServiceClient userServiceClient1) {
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
-        this.userServiceClient = userServiceClient;
+        this.userServiceClient = userServiceClient1;
     }
 
     // Register endpoint
     @PostMapping("/register")
-    public String register(@RequestBody RegisterRequest registerRequest) {
-        // Forward registration request to user-service
-        return userServiceClient.registerUser(registerRequest);
+    public ResponseEntity<String> register(@RequestBody UserDTO userDTO) {
+        return userServiceClient.registerUser(userDTO);
     }
 
     // Login endpoint
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        // Retrieve user from user-service
-        UserResponse user = userServiceClient.getUserByUsername(loginRequest.getUsername());
+        ResponseEntity<String> response = userServiceClient.loginUser(loginRequest);
 
-        if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid credentials");
+        if(response.getStatusCode() == HttpStatus.OK){
+            // Generate JWT token
+            String token = jwtUtil.generateToken(loginRequest.getUsername());
+            return ResponseEntity.ok(token);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
         }
 
-        // Generate JWT token
-        return ResponseEntity.status(HttpStatus.OK).body(jwtUtil.generateToken(user.getUsername()));
     }
 
 }
