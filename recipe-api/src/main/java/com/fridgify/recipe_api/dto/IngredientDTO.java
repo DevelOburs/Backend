@@ -11,12 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IngredientDTO {
+
     private long id;
     private String name;
 
     public Ingredient toModel() {
-        return Ingredient.builder()
-                .name(this.name)
-                .build();
+        return Ingredient.builder().name(this.name).build();
     }
 }

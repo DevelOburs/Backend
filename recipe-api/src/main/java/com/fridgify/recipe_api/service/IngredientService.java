@@ -2,16 +2,15 @@ package com.fridgify.recipe_api.service;
 
 import com.fridgify.recipe_api.model.Ingredient;
 import com.fridgify.recipe_api.repository.IngredientRepository;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 public class IngredientService {
+
     private final IngredientRepository ingredientRepository;
 
     public List<Ingredient> getAllIngredients() {

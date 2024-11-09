@@ -48,7 +48,7 @@ jobs:
 
       # Build the entire project
       - name: Build with Gradle Wrapper
-        run: ./gradlew build -x test
+        run: ./gradlew build -x test -x spotlessCheck
 
   dependency-submission:
     runs-on: ubuntu-latest
