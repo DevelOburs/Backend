@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: user-service
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            user-service[0]:
+              uri: http://localhost:8082
+eureka:
+  client:
+    enabled: false
