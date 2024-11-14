@@ -1,10 +1,7 @@
 package com.fridgify.auth_api.controller;
 
 import com.fridgify.auth_api.client.UserServiceClient;
-import com.fridgify.auth_api.dto.LoginUserDTO;
-import com.fridgify.auth_api.dto.RegisterUserDTO;
-import com.fridgify.auth_api.dto.ResponseUserDTO;
-import com.fridgify.auth_api.dto.TokenDTO;
+import com.fridgify.auth_api.dto.*;
 import com.fridgify.shared.jwt.util.JwtUtil;
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
@@ -63,6 +60,19 @@ public class AuthController {
                     .error("username, email or password is wrong")
                     .build();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(tokenResponse);
+        }
+    }
+
+    //
+    @PutMapping("/changePassword")
+    public ResponseEntity<Optional<ResponseUserDTO>> changePassword(@RequestBody ChangePasswordUserDTO ChangePasswordUserDTO) {
+        try {
+            ResponseEntity<Optional<ResponseUserDTO>> response = userServiceClient.changePassword(ChangePasswordUserDTO);
+            return ResponseEntity.ok(response.getBody());
+        } catch (FeignException.FeignClientException.BadRequest e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (FeignException.FeignClientException.InternalServerError e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

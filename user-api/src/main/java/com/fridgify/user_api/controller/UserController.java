@@ -51,14 +51,19 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("User API is working");
-    }
-
-    @PutMapping("/change-password")
+    @PutMapping("/changePassword")
     public ResponseEntity<Optional<ResponseUserDTO>> changePassword(@RequestBody ChangePasswordUserDTO ChangePasswordUserDTO) {
         Optional<ResponseUserDTO> response = userService.changePassword(ChangePasswordUserDTO);
+        if (response.isPresent()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @PutMapping("/updateUser")
+    public ResponseEntity<Optional<ResponseUserDTO>> updateUser(@RequestBody ResponseUserDTO responseUserDTO) {
+        Optional<ResponseUserDTO> response = userService.updateUser(responseUserDTO);
         if (response.isPresent()) {
             return ResponseEntity.ok(response);
         } else {
