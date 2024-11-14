@@ -1,8 +1,5 @@
 package com.fridgify.user_api.controller;
-import com.fridgify.user_api.dto.ChangePasswordUserDTO;
-import com.fridgify.user_api.dto.LoginUserDTO;
-import com.fridgify.user_api.dto.RegisterUserDTO;
-import com.fridgify.user_api.dto.ResponseUserDTO;
+import com.fridgify.user_api.dto.*;
 import com.fridgify.user_api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,9 +58,9 @@ public class UserController {
         }
     }
 
-    @PutMapping("/updateUser")
-    public ResponseEntity<Optional<ResponseUserDTO>> updateUser(@RequestBody ResponseUserDTO responseUserDTO) {
-        Optional<ResponseUserDTO> response = userService.updateUser(responseUserDTO);
+    @PutMapping("/updateUser/{username}")
+    public ResponseEntity<Optional<ResponseUserDTO>> updateUser(@PathVariable("username") String username, @RequestBody UpdateUserDTO UpdateUserDTO) {
+        Optional<ResponseUserDTO> response = userService.updateUser(username, UpdateUserDTO);
         if (response.isPresent()) {
             return ResponseEntity.ok(response);
         } else {
