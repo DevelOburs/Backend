@@ -1,5 +1,6 @@
 package com.fridgify.user_api.service;
 
+import com.fridgify.user_api.dto.ChangePasswordUserDTO;
 import com.fridgify.user_api.dto.LoginUserDTO;
 import com.fridgify.user_api.dto.RegisterUserDTO;
 import com.fridgify.user_api.dto.ResponseUserDTO;
@@ -71,5 +72,28 @@ public class UserService {
         } else {
             return Optional.empty();
         }
+    }
+
+    public Optional<ResponseUserDTO> changePassword(ChangePasswordUserDTO ChangePasswordUserDTO){
+        Optional<User> user = userRepository.findByUsername(ChangePasswordUserDTO.getUsername());
+        if(user.isEmpty()){
+            return Optional.empty();
+        }
+
+        User existing_user = user.get();
+
+        if(!passwordEncoder.matches(ChangePasswordUserDTO.getPassword(), existing_user.getPassword())){
+            return Optional.empty();
+        }
+
+        user.get().setPassword(passwordEncoder.encode(ChangePasswordUserDTO.getNewPassword()));
+        userRepository.save(existing_user);
+
+        return Optional.ofNullable(ResponseUserDTO.builder()
+                .email(existing_user.getEmail())
+                .username(existing_user.getUsername())
+                .firstName(existing_user.getFirstName())
+                .lastName(existing_user.getLastName())
+                .build());
     }
 }

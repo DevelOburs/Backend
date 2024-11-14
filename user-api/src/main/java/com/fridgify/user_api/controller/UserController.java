@@ -1,4 +1,5 @@
 package com.fridgify.user_api.controller;
+import com.fridgify.user_api.dto.ChangePasswordUserDTO;
 import com.fridgify.user_api.dto.LoginUserDTO;
 import com.fridgify.user_api.dto.RegisterUserDTO;
 import com.fridgify.user_api.dto.ResponseUserDTO;
@@ -53,5 +54,15 @@ public class UserController {
     @GetMapping("/test")
     public ResponseEntity<String> test() {
         return ResponseEntity.ok("User API is working");
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<Optional<ResponseUserDTO>> changePassword(@RequestBody ChangePasswordUserDTO ChangePasswordUserDTO) {
+        Optional<ResponseUserDTO> response = userService.changePassword(ChangePasswordUserDTO);
+        if (response.isPresent()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
     }
 }
