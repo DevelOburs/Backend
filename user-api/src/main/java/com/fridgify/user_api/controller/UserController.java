@@ -58,13 +58,15 @@ public class UserController {
         }
     }
 
-    @PutMapping("/updateUser/{username}")
-    public ResponseEntity<Optional<ResponseUserDTO>> updateUser(@PathVariable("username") String username, @RequestBody UpdateUserDTO UpdateUserDTO) {
+    @PutMapping("/updateUser")
+    public ResponseEntity<Optional<ResponseUserDTO>> updateUser(@RequestParam("username") String username, @RequestBody UpdateUserDTO UpdateUserDTO) {
+
         Optional<ResponseUserDTO> response = userService.updateUser(username, UpdateUserDTO);
         if (response.isPresent()) {
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+
     }
 }

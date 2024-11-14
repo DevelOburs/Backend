@@ -97,8 +97,9 @@ public class UserService {
                 .build());
     }
 
-    public Optional<ResponseUserDTO> updateUser(String User, UpdateUserDTO UpdateUserDTO) {
-        Optional<User> user = userRepository.findByUsername(User);
+    public Optional<ResponseUserDTO> updateUser(String username, UpdateUserDTO UpdateUserDTO) {
+
+        Optional<User> user = userRepository.findByUsername(username);
         if(user.isEmpty()){
             throw new UsernameNotFoundException("User not found");
         }

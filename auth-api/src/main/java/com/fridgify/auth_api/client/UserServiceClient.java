@@ -1,9 +1,6 @@
 package com.fridgify.auth_api.client;
 
-import com.fridgify.auth_api.dto.ChangePasswordUserDTO;
-import com.fridgify.auth_api.dto.LoginUserDTO;
-import com.fridgify.auth_api.dto.RegisterUserDTO;
-import com.fridgify.auth_api.dto.ResponseUserDTO;
+import com.fridgify.auth_api.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,5 +22,6 @@ public interface UserServiceClient {
     @PutMapping("/user-api/changePassword")
     ResponseEntity<Optional<ResponseUserDTO>> changePassword(@RequestBody ChangePasswordUserDTO changePasswordUserDTO);
 
-
+    @PutMapping("/user-api/updateUser")
+    ResponseEntity<Optional<ResponseUserDTO>> updateUser(@RequestParam("username") String username, @RequestBody UpdateUserDTO updateUserDTO);
 }
