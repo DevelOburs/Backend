@@ -8,6 +8,8 @@ import com.fridgify.user_api.model.User;
 import com.fridgify.user_api.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 
 import java.util.Optional;
 
@@ -95,5 +97,25 @@ public class UserService {
                 .firstName(existing_user.getFirstName())
                 .lastName(existing_user.getLastName())
                 .build());
+    }
+
+    public Optional<ResponseUserDTO> updateUser(ResponseUserDTO responseUserDTO) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> user = userRepository.findByUsername(username);
+
+        if(user.isEmpty()){
+            return Optional.empty();
+        } else {
+            user.get().setFirstName(responseUserDTO.getFirstName());
+            user.get().setLastName(responseUserDTO.getLastName());
+            userRepository.save(user.get());
+
+            return Optional.ofNullable(ResponseUserDTO.builder()
+                    .email(user.get().getEmail())
+                    .username(user.get().getUsername())
+                    .firstName(user.get().getFirstName())
+                    .lastName(user.get().getLastName())
+                    .build());
+        }
     }
 }
