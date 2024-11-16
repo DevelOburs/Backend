@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: auth-api
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            user-api[0]:
+              uri: http://localhost:8082
+eureka:
+  client:
+    enabled: false

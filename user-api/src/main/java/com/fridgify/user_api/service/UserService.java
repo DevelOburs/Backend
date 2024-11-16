@@ -61,7 +61,6 @@ public class UserService {
 
         Optional<User> existing_user = user_with_email.isPresent() ? user_with_email : user_with_username;
         if(passwordEncoder.matches(loginUserDTO.getPassword(), existing_user.get().getPassword())){
-            System.console();
             return Optional.ofNullable(ResponseUserDTO.builder()
                     .email(existing_user.get().getEmail())
                     .username(existing_user.get().getUsername())
