@@ -5,6 +5,23 @@ CREATE TABLE ingredient (
     category VARCHAR(50)
 );
 
+-- Fridge table to store unique fridge IDs
+CREATE TABLE fridge (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+
+-- Users table to store user information
+CREATE TABLE user (
+     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+     fridge_id BIGINT UNSIGNED NULL, -- Foreign key to fridge table
+     name VARCHAR(100) NOT NULL,
+     email VARCHAR(255) NOT NULL UNIQUE,
+     password VARCHAR(255) NOT NULL,
+     phone_number VARCHAR(15),
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+     FOREIGN KEY (fridge_id) REFERENCES fridge(id) ON DELETE SET NULL
+);
 -- Recipes table to store recipe information
 CREATE TABLE recipe (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -26,11 +43,6 @@ CREATE TABLE recipe_ingredient (
     FOREIGN KEY (ingredient_id) REFERENCES ingredient(id) ON DELETE CASCADE
 );
 
--- Fridge table to store unique fridge IDs
-CREATE TABLE fridge (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY
-);
-
 -- Fridge ingredients table to store the ingredients present in each fridge
 CREATE TABLE fridge_ingredient (
     fridge_id BIGINT UNSIGNED NOT NULL,
@@ -38,19 +50,6 @@ CREATE TABLE fridge_ingredient (
     PRIMARY KEY (fridge_id, ingredient_id),
     FOREIGN KEY (fridge_id) REFERENCES fridge(id) ON DELETE CASCADE,
     FOREIGN KEY (ingredient_id) REFERENCES ingredient(id) ON DELETE CASCADE
-);
-
--- Users table to store user information
-CREATE TABLE user (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    fridge_id BIGINT UNSIGNED NULL, -- Foreign key to fridge table
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    phone_number VARCHAR(15),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (fridge_id) REFERENCES fridge(id) ON DELETE SET NULL
 );
 
 -- User app settings table
@@ -113,13 +112,3 @@ CREATE TABLE recipe_like (
     FOREIGN KEY (recipe_id) REFERENCES recipe(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
-
--- User's custom recipes table to store recipes created by users
-CREATE TABLE user_recipe
-(
-    user_id   BIGINT UNSIGNED NOT NULL,
-    recipe_id BIGINT UNSIGNED NOT NULL,
-    PRIMARY KEY (user_id, recipe_id),
-    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
-    FOREIGN KEY (recipe_id) REFERENCES recipe (id) ON DELETE CASCADE
-)
