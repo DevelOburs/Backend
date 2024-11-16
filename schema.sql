@@ -115,9 +115,11 @@ CREATE TABLE recipe_like (
 );
 
 -- User's custom recipes table to store recipes created by users
-CREATE TABLE user_recipe (
-    user_id BIGINT UNSIGNED NOT NULL,
+CREATE TABLE user_recipe
+(
+    user_id   BIGINT UNSIGNED NOT NULL,
     recipe_id BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (user_id, recipe_id),
-    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY (recipe_id) REFERENCES recipe(id) ON DELETE CASCAD
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
+    FOREIGN KEY (recipe_id) REFERENCES recipe (id) ON DELETE CASCADE
+)
