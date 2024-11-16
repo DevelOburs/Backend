@@ -10,6 +10,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok:1.18.20'
 	annotationProcessor 'org.projectlombok:lombok:1.18.20'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	testImplementation 'org.wiremock:wiremock-standalone'
 }
 
 // Import Spring Cloud BOM to manage Spring Cloud dependencies
