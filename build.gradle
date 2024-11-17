@@ -23,5 +23,6 @@ subprojects {
 
     test {
         useJUnitPlatform()
+        outputs.upToDateWhen { false }  // disable test cache
     }
 }
