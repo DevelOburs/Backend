@@ -20,4 +20,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     // Example: Find recipes that have a specific ingredient
     List<Recipe> findByDescriptionContaining(String descriptionWords);
+
+    List<Recipe> findRecipesByUserId(Long userId);
 }
