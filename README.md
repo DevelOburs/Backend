@@ -10,10 +10,10 @@ in root folder, run:
 docker-compose up
 
 to delete old db version adn install new:
-docker compose down
+#### docker compose down
 // You should delete volume at this point, you can do it on docker desktop or temrinal
-docker volume list 
+#### docker volume list 
 // there should be: backend_fridge-db-data
-docker volume rm backend_fridge-db-data
+#### docker volume rm backend_fridge-db-data
 
 docker-compose up
