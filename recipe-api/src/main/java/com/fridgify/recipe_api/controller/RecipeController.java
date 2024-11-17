@@ -81,4 +81,8 @@ public class RecipeController {
         recipeService.deleteRecipe(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/{user}")
+    public ResponseEntity<RecipeDTO> getRecipesByUserId(@PathVariable Long userId) {
+
+    }
 }
