@@ -1,15 +1,13 @@
 package com.fridgify.user_api.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-public class ResponseUserDTO {
-    private String username;
+public class UpdateUserDTO {
     private String email;
     private String firstName;
     private String lastName;

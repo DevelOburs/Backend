@@ -1,12 +1,13 @@
 package com.fridgify.user_api.service;
 
-import com.fridgify.user_api.dto.LoginUserDTO;
-import com.fridgify.user_api.dto.RegisterUserDTO;
-import com.fridgify.user_api.dto.ResponseUserDTO;
+import com.fridgify.user_api.dto.*;
 import com.fridgify.user_api.model.User;
 import com.fridgify.user_api.repository.UserRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 
 import java.util.Optional;
 
@@ -70,5 +71,54 @@ public class UserService {
         } else {
             return Optional.empty();
         }
+    }
+
+    public Optional<ResponseUserDTO> changePassword(ChangePasswordUserDTO ChangePasswordUserDTO){
+        Optional<User> user = userRepository.findByUsername(ChangePasswordUserDTO.getUsername());
+        if(user.isEmpty()){
+            return Optional.empty();
+        }
+
+        User existing_user = user.get();
+
+        if(!passwordEncoder.matches(ChangePasswordUserDTO.getPassword(), existing_user.getPassword())){
+            return Optional.empty();
+        }
+
+        user.get().setPassword(passwordEncoder.encode(ChangePasswordUserDTO.getNewPassword()));
+        userRepository.save(existing_user);
+
+        return Optional.ofNullable(ResponseUserDTO.builder()
+                .email(existing_user.getEmail())
+                .username(existing_user.getUsername())
+                .firstName(existing_user.getFirstName())
+                .lastName(existing_user.getLastName())
+                .build());
+    }
+
+    public Optional<ResponseUserDTO> updateUser(String username, UpdateUserDTO UpdateUserDTO) {
+
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isEmpty()){
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        if(UpdateUserDTO.getEmail() != null){
+            user.get().setEmail(UpdateUserDTO.getEmail());
+        }
+        if(UpdateUserDTO.getFirstName() != null){
+            user.get().setFirstName(UpdateUserDTO.getFirstName());
+        }
+        if(UpdateUserDTO.getLastName() != null){
+            user.get().setLastName(UpdateUserDTO.getLastName());
+        }
+        userRepository.save(user.get());
+
+        return Optional.ofNullable(ResponseUserDTO.builder()
+                .email(user.get().getEmail())
+                .username(user.get().getUsername())
+                .firstName(user.get().getFirstName())
+                .lastName(user.get().getLastName())
+                .build());
     }
 }
