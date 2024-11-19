@@ -31,6 +31,8 @@ CREATE TABLE recipe (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id BIGINT UNSIGNED, -- Foreign key to the user table
     image_url VARCHAR(255), -- Column to store the image URL
+    like_count INT UNSIGNED DEFAULT 0,
+    comment_count INT UNSIGNED DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE SET NULL
 );
 

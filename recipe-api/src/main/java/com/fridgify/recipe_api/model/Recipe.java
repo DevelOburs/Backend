@@ -27,4 +27,10 @@ public class Recipe {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false) // Establish the foreign key
     private User user;
+
+    @Column(name = "like_count", nullable = false)
+    private Long likeCount = 0L;
+
+    @Column(name = "comment_count", nullable = false)
+    private Long commentCount = 0L;
 }

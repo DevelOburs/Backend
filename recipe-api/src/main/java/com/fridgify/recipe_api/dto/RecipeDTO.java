@@ -22,6 +22,8 @@ public class RecipeDTO {
     private String description;
     private LocalDateTime createdAt;
     private Long userId; // This field will be populated from JSON
+    private Long likeCount;
+    private Long commentCount;
 
     @JsonIgnore
     private User user; // Used internally to map the user entity
@@ -31,6 +33,9 @@ public class RecipeDTO {
         return Recipe.builder()
                 .name(this.name)
                 .description(this.description)
+                .user(User.builder().id(this.userId).build())
+                .likeCount(this.likeCount)
+                .commentCount(this.commentCount)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
