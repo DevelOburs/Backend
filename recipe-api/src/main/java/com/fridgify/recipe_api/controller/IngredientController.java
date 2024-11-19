@@ -21,8 +21,11 @@ public class IngredientController {
     private final IngredientService ingredientService;
 
     @GetMapping
-    public ResponseEntity<List<IngredientDTO>> getAllIngredients() {
-        List<IngredientDTO> ingredients = ingredientService.getAllIngredients().stream()
+    public ResponseEntity<List<IngredientDTO>> getAllIngredients(
+            @RequestParam(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+        List<IngredientDTO> ingredients = ingredientService.getAllIngredients(limit, pageNumber)
+                .stream()
                 .map(ingredient -> new IngredientDTO(ingredient.getId(), ingredient.getName()))
                 .collect(Collectors.toList());
         return new ResponseEntity<>(ingredients, HttpStatus.OK);
