@@ -25,8 +25,14 @@ public class RecipeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RecipeDTO>> getAllRecipes() {
-        List<Recipe> recipes = recipeService.getAllRecipes();
+    public ResponseEntity<List<RecipeDTO>> getAllRecipes(
+            @RequestParam(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+
+        // Fetch recipes with pagination
+        List<Recipe> recipes = recipeService.getAllRecipes(limit, pageNumber);
+
+        // Convert Recipe to RecipeDTO
         List<RecipeDTO> recipeDTOs = recipes.stream()
                 .map(recipe -> RecipeDTO.builder()
                         .id(recipe.getId())
@@ -34,6 +40,7 @@ public class RecipeController {
                         .description(recipe.getDescription())
                         .build())
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(recipeDTOs);
     }
 
