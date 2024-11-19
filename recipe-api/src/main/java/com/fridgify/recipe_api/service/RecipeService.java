@@ -4,6 +4,8 @@ import com.fridgify.recipe_api.common.exception.ResourceNotFoundException;
 import com.fridgify.recipe_api.dto.RecipeDTO;
 import com.fridgify.recipe_api.model.Recipe;
 import com.fridgify.recipe_api.repository.RecipeRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +19,14 @@ public class RecipeService {
         this.recipeRepository = recipeRepository;
     }
 
-    public List<Recipe> getAllRecipes() {
-        return recipeRepository.findAll();
+    public List<Recipe> getAllRecipes(Integer limit, Integer pageNumber) {
+        if (limit != null && pageNumber != null) {
+            Pageable pageable = PageRequest.of(pageNumber, limit);
+            return recipeRepository.findAll(pageable).getContent();
+        }
+        else {
+            return recipeRepository.findAll();
+        }
     }
 
     public Recipe getRecipeById(Long id) {
