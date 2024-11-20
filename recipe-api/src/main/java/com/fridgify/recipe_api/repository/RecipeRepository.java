@@ -9,12 +9,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Override
     List<Recipe> findAll();
 
+    Optional<Recipe> findRecipeById(Long id);
     // Find all recipes by name (Spring Data JPA will automatically implement this)
     List<Recipe> findByName(String name);
 
@@ -30,4 +32,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Modifying
     @Query("UPDATE Recipe r SET r.commentCount = :commentCount WHERE r.id = :recipeId")
     void updateCommentCount(@Param("recipeId") Long recipeId, @Param("commentCount") Long commentCount);
+
+    @Modifying
+    @Query("UPDATE Recipe r SET r.saveCount = :saveCount WHERE r.id = :recipeId")
+    void updateSaveCount(@Param("recipeId") Long recipeId, @Param("saveCount") Long saveCount);
 }

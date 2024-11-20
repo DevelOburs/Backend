@@ -24,6 +24,7 @@ public class RecipeDTO {
     private Long userId; // This field will be populated from JSON
     private Long likeCount;
     private Long commentCount;
+    private Long saveCount;
 
     @JsonIgnore
     private User user; // Used internally to map the user entity
