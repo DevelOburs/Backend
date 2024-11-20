@@ -30,9 +30,6 @@ public class RecipeLike {
 
         @Column(name = "user_id")
         private Long userId;
-
-
-
     }
 
     // Constructors, Getters, Setters

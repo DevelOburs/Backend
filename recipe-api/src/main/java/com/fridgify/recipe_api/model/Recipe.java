@@ -33,4 +33,7 @@ public class Recipe {
 
     @Column(name = "comment_count", nullable = false)
     private Long commentCount = 0L;
+
+    @Column(name = "save_count", nullable = false)
+    private Long saveCount = 0L;
 }

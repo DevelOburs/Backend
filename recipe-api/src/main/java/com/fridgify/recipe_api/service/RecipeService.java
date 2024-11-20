@@ -4,6 +4,7 @@ import com.fridgify.recipe_api.common.exception.ResourceNotFoundException;
 import com.fridgify.recipe_api.dto.RecipeDTO;
 import com.fridgify.recipe_api.model.Recipe;
 import com.fridgify.recipe_api.repository.RecipeRepository;
+import com.fridgify.recipe_api.repository.UserSavedRecipeRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class RecipeService {
     }
 
     public Recipe getRecipeById(Long id) {
-        return recipeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recipe not found with id " + id));
+        return recipeRepository.findRecipeById(id).orElseThrow(() -> new ResourceNotFoundException("Recipe not found with id " + id));
     }
 
     public Recipe createRecipe(Recipe recipe) {
