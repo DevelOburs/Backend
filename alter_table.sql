@@ -5,6 +5,14 @@ ALTER TABLE user ADD COLUMN first_name VARCHAR(200) DEFAULT "test";
 
 ALTER TABLE user ADD COLUMN last_name VARCHAR(200) DEFAULT "test";
 
+ALTER TABLE user DROP COLUMN phone_number;
+
+ALTER TABLE recipe
+    ADD COLUMN like_count INT UNSIGNED DEFAULT 0,
+    ADD COLUMN comment_count INT UNSIGNED DEFAULT 0;
+
+ALTER TABLE recipe ADD COLUMN save_count INT UNSIGNED DEFAULT 0;
+
 ALTER TABLE user DROP FOREIGN KEY user_ibfk_1;
 
 ALTER TABLE fridge_ingredient DROP FOREIGN KEY fridge_ingredient_ibfk_1;
@@ -36,4 +44,3 @@ VALUES
     (2, 2),
     (3, 4),
     (3, 5);
-
