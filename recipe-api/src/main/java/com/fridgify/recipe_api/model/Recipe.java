@@ -1,6 +1,5 @@
 package com.fridgify.recipe_api.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,4 +24,16 @@ public class Recipe {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false) // Establish the foreign key
+    private User user;
+
+    @Column(name = "like_count", nullable = false)
+    private Long likeCount = 0L;
+
+    @Column(name = "comment_count", nullable = false)
+    private Long commentCount = 0L;
+
+    @Column(name = "save_count", nullable = false)
+    private Long saveCount = 0L;
 }

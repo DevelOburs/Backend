@@ -1,7 +1,5 @@
 package com.fridgify.user_api.controller;
-import com.fridgify.user_api.dto.LoginUserDTO;
-import com.fridgify.user_api.dto.RegisterUserDTO;
-import com.fridgify.user_api.dto.ResponseUserDTO;
+import com.fridgify.user_api.dto.*;
 import com.fridgify.user_api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,8 +48,25 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("User API is working");
+    @PutMapping("/changePassword")
+    public ResponseEntity<Optional<ResponseUserDTO>> changePassword(@RequestBody ChangePasswordUserDTO ChangePasswordUserDTO) {
+        Optional<ResponseUserDTO> response = userService.changePassword(ChangePasswordUserDTO);
+        if (response.isPresent()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @PutMapping("/updateUser")
+    public ResponseEntity<Optional<ResponseUserDTO>> updateUser(@RequestParam("username") String username, @RequestBody UpdateUserDTO UpdateUserDTO) {
+
+        Optional<ResponseUserDTO> response = userService.updateUser(username, UpdateUserDTO);
+        if (response.isPresent()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
     }
 }
