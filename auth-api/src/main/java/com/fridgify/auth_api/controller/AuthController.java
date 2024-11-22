@@ -1,10 +1,7 @@
 package com.fridgify.auth_api.controller;
 
 import com.fridgify.auth_api.client.UserServiceClient;
-import com.fridgify.auth_api.dto.LoginUserDTO;
-import com.fridgify.auth_api.dto.RegisterUserDTO;
-import com.fridgify.auth_api.dto.ResponseUserDTO;
-import com.fridgify.auth_api.dto.TokenDTO;
+import com.fridgify.auth_api.dto.*;
 import com.fridgify.shared.jwt.util.JwtUtil;
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
@@ -64,5 +61,39 @@ public class AuthController {
                     .build();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(tokenResponse);
         }
+    }
+
+    //
+    @PutMapping("/changePassword")
+    public ResponseEntity<Optional<ResponseUserDTO>> changePassword(@RequestBody ChangePasswordUserDTO ChangePasswordUserDTO) {
+        try {
+            ResponseEntity<Optional<ResponseUserDTO>> response = userServiceClient.changePassword(ChangePasswordUserDTO);
+            return ResponseEntity.ok(response.getBody());
+        } catch (FeignException.FeignClientException.BadRequest e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (FeignException.FeignClientException.InternalServerError e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/updateUser")
+    public ResponseEntity<Optional<ResponseUserDTO>> updateUser(@RequestHeader("Authorization") String token, @RequestBody UpdateUserDTO UpdateUserDTO) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Optional.empty());
+        }
+        String jwtToken = token.substring(7);
+        String username = jwtUtil.extractUsername(jwtToken);
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Optional.empty());
+        }
+        try {
+            return userServiceClient.updateUser(username, UpdateUserDTO);
+        } catch (FeignException.FeignClientException.BadRequest e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (FeignException.FeignClientException.InternalServerError e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }
