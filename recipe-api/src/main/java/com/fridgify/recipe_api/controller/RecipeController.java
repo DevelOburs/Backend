@@ -38,6 +38,8 @@ public class RecipeController {
                         .id(recipe.getId())
                         .name(recipe.getName())
                         .description(recipe.getDescription())
+                        .likeCount(recipe.getLikeCount())
+                        .commentCount(recipe.getCommentCount())
                         .build())
                 .collect(Collectors.toList());
 
