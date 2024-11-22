@@ -4,7 +4,6 @@ import com.fridgify.recipe_api.dto.IngredientDTO;
 import com.fridgify.recipe_api.model.Ingredient;
 import com.fridgify.recipe_api.service.IngredientService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,7 @@ public class IngredientController {
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
         List<IngredientDTO> ingredients = ingredientService.getAllIngredients(limit, pageNumber)
                 .stream()
-                .map(ingredient -> new IngredientDTO(ingredient.getId(), ingredient.getName()))
+                .map(ingredient -> new IngredientDTO(ingredient.getId(), ingredient.getName(), ingredient.getCategory(), ingredient.getImageUrl()))
                 .collect(Collectors.toList());
         return new ResponseEntity<>(ingredients, HttpStatus.OK);
     }
@@ -35,7 +34,7 @@ public class IngredientController {
     public ResponseEntity<IngredientDTO> getIngredientById(@PathVariable Long id) {
         Optional<Ingredient> ingredient = ingredientService.getIngredientById(id);
         if (ingredient.isPresent()) {
-            IngredientDTO ingredientDTO = new IngredientDTO(ingredient.get().getId(), ingredient.get().getName());
+            IngredientDTO ingredientDTO = new IngredientDTO(ingredient.get().getId(), ingredient.get().getName(), ingredient.get().getCategory(), ingredient.get().getImageUrl());
             return new ResponseEntity<>(ingredientDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -46,7 +45,7 @@ public class IngredientController {
     public ResponseEntity<IngredientDTO> createIngredient(@RequestBody IngredientDTO ingredientDTO) {
         Ingredient ingredient = ingredientDTO.toModel();
         Ingredient savedIngredient = ingredientService.saveIngredient(ingredient);
-        IngredientDTO savedIngredientDTO = new IngredientDTO(savedIngredient.getId(), savedIngredient.getName());
+        IngredientDTO savedIngredientDTO = new IngredientDTO(savedIngredient.getId(), savedIngredient.getName(), savedIngredient.getCategory(), savedIngredient.getImageUrl());
         return new ResponseEntity<>(savedIngredientDTO, HttpStatus.CREATED);
     }
 
@@ -59,7 +58,7 @@ public class IngredientController {
         Ingredient ingredient = ingredientDTO.toModel();
         ingredient.setId(id); // Ensure the ID is set for the update
         Ingredient updatedIngredient = ingredientService.saveIngredient(ingredient);
-        IngredientDTO updatedIngredientDTO = new IngredientDTO(updatedIngredient.getId(), updatedIngredient.getName());
+        IngredientDTO updatedIngredientDTO = new IngredientDTO(updatedIngredient.getId(), updatedIngredient.getName(), updatedIngredient.getCategory(), updatedIngredient.getImageUrl());
         return new ResponseEntity<>(updatedIngredientDTO, HttpStatus.OK);
     }
 
