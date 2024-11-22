@@ -1,0 +1,9 @@
+server:
+  port: 8083 # Port for auth-api service
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    fetchRegistry: true
+    registerWithEureka: true
