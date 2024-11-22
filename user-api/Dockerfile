@@ -25,8 +25,8 @@ COPY --from=jre-builder /optimized-jdk-17 $JAVA_HOME
 
 WORKDIR /app
 
-COPY ./build/libs/api-eureka-0.0.1-SNAPSHOT.jar /app/app.jar
+COPY ./build/libs/user-api.jar /app/app.jar
 
-EXPOSE 8761
+EXPOSE 443
 
 ENTRYPOINT ["java", "-jar", "/app/app.jar", "--spring.profiles.active=prod"]

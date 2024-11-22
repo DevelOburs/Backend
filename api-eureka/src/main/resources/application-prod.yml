@@ -1,0 +1,9 @@
+server:
+  port: ${PORT:8761}
+
+eureka:
+  instance:
+    hostname: ${EUREKA_HOSTNAME:ec2-51-21-135-63.eu-north-1.compute.amazonaws.com}
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka/

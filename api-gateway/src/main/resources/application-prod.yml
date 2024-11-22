@@ -1,0 +1,9 @@
+server:
+  port: ${PORT:8080}
+
+eureka:
+    instance:
+      hostname: ${GATEWAY_API_HOST:ec2-51-21-135-63.eu-north-1.compute.amazonaws.com}
+    client:
+      serviceUrl:
+        defaultZone: http://${EUREKA_HOST:ec2-51-21-135-63.eu-north-1.compute.amazonaws.com}:8761/eureka/
