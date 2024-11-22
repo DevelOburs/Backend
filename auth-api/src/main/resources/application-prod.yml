@@ -1,9 +1,17 @@
 server:
-  port: ${PORT:8083} # Port for auth-api service
+  port: ${PORT:443} # Port for auth-api service
 
 eureka:
+  instance:
+    hostname: ${AUTH_API_HOST:auth-api-863962813656.europe-north1.run.app}
+    secure-port-enabled: true
+    non-secure-port-enabled: false
   client:
     serviceUrl:
-      defaultZone: https://api-eureka-863962813656.europe-central2.run.app:8761/eureka
-    fetchRegistry: true
-    registerWithEureka: true
+      defaultZone: http://${EUREKA_HOST:ec2-51-21-135-63.eu-north-1.compute.amazonaws.com}:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info

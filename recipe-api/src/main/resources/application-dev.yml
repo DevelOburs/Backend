@@ -1,5 +1,5 @@
 server:
-  port: 8083 # Port for auth-api service
+  port: 8081 # Port for recipe-api service
 
 eureka:
   client:

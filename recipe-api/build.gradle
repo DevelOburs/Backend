@@ -6,6 +6,7 @@ dependencies {
 	implementation 'com.fridgify:shared:1.0.0' // Use the published library
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
