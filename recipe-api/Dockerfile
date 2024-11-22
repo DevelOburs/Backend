@@ -25,7 +25,7 @@ COPY --from=jre-builder /optimized-jdk-17 $JAVA_HOME
 
 WORKDIR /app
 
-COPY ./build/libs/auth-api.jar /app/app.jar
+COPY ./build/libs/recipe-api.jar /app/app.jar
 
 EXPOSE 443
 

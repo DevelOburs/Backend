@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://develoburs-develoburs.j.aivencloud.com:14979/fridge
+    username: avnadmin
+    password: AVNS_jdpUNO7kKCRZfl1aQBv
+
+server:
+  port: ${PORT:443} # Port for recipe-api service
+
+eureka:
+  instance:
+    hostname: ${USER_API_HOST:recipe-api-863962813656.europe-north1.run.app}
+    secure-port-enabled: true
+    non-secure-port-enabled: false
+  client:
+    serviceUrl:
+      defaultZone: http://${EUREKA_HOST:ec2-51-21-135-63.eu-north-1.compute.amazonaws.com}:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
