@@ -14,7 +14,7 @@ spring:
         - id: recipe-api
           uri: lb://recipe-api
           predicates:
-            - Path=/recipe-api/**
+            - Path=/recipe-api/**, /fridge-api/**
 
         - id: user-api
           uri: lb://user-api

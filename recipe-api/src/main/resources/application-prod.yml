@@ -10,7 +10,7 @@ server:
 
 eureka:
   instance:
-    hostname: ${USER_API_HOST:recipe-api-863962813656.europe-north1.run.app}
+    hostname: ${RECIPE_API_HOST:recipe-api-863962813656.europe-north1.run.app}
     secure-port-enabled: true
     non-secure-port-enabled: false
   client:
