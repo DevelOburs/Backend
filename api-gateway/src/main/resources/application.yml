@@ -1,17 +1,8 @@
-server:
-  port: 8080
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-    fetchRegistry: true
-    registerWithEureka: true
-
 spring:
   application:
     name: api-gateway
-
+  profiles:
+    active: dev
   cloud:
     gateway:
       routes:
@@ -23,7 +14,7 @@ spring:
         - id: recipe-api
           uri: lb://recipe-api
           predicates:
-            - Path=/recipe-api/**
+            - Path=/recipe-api/**, /fridge-api/**
 
         - id: user-api
           uri: lb://user-api
@@ -44,3 +35,14 @@ spring:
           uri: lb://notification-api
           predicates:
             - Path=/notification-api/**
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
