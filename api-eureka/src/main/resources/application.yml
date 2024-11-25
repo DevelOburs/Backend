@@ -1,9 +1,8 @@
 spring:
   application:
     name: api-eureka
-
-server:
-  port: 8761
+  profiles:
+    active: dev
 
 eureka:
   client:

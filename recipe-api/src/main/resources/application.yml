@@ -1,13 +1,10 @@
 spring:
   application:
     name: recipe-api
-
-server:
-  port: 8081 # Port for recipe-api service
+  profiles:
+    active: dev
 
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
     fetchRegistry: true
     registerWithEureka: true
