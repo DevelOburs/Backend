@@ -71,6 +71,7 @@ jobs:
 
       - name: Move JAR file to the correct path
         run: |
+          unzip jar-files.zip -d jar-files/
           mkdir -p build/libs
           mv jar-files/*.jar build/libs/
 
