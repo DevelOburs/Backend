@@ -69,12 +69,6 @@ jobs:
         with:
           name: jar-files
 
-      - name: Move JAR file to the correct path
-        run: |
-          ls -R
-          mkdir -p build/libs
-          mv *.jar build/libs/
-
       - name: Log in to DockerHub
         uses: docker/login-action@v2
         with:
@@ -84,17 +78,20 @@ jobs:
       - name: Build and push Docker image for auth-api
         run: |
           echo "Building and pushing Docker image for auth-api"
-          docker build -t develoburs/auth-api:latest -f auth-api/Dockerfile .
+          cd auth-api
+          docker build -t develoburs/auth-api:latest --platform=linux/amd64 .
           docker push develoburs/auth-api:latest
 
       - name: Build and push Docker image for user-api
         run: |
           echo "Building and pushing Docker image for user-api"
-          docker build -t develoburs/user-api:latest -f user-api/Dockerfile .
+          cd user-api
+          docker build -t develoburs/user-api:latest --platform=linux/amd64 .
           docker push develoburs/user-api:latest
 
       - name: Build and push Docker image for recipe-api
         run: |
           echo "Building and pushing Docker image for recipe-api"
-          docker build -t develoburs/recipe-api:latest -f recipe-api/Dockerfile .
+          cd recipe-api
+          docker build -t develoburs/recipe-api:latest --platform=linux/amd64 .
           docker push develoburs/recipe-api:latest
