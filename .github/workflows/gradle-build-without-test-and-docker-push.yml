@@ -71,6 +71,7 @@ jobs:
 
       - name: Move JAR file to the correct path
         run: |
+          ls -R
           mkdir -p build/libs
           mv *.jar build/libs/
 
