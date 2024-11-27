@@ -1,4 +1,4 @@
-name: Docker Push
+name: Push Docker Image
 
 on:
   workflow_run:
@@ -41,13 +41,15 @@ jobs:
   docker:
     needs: detect-changes
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Download JAR files
-        uses: actions/download-artifact@v3
+        uses: dawidd6/action-download-artifact@v6
         with:
+          workflow: gradle-build-without-test.yml
           name: jar-files
 
       - name: Log in to DockerHub
