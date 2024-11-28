@@ -11,7 +11,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FridgeDTO {
-    private Long userId;
-    private List<IngredientDTO> ingredients;
+public class IngredientIdsDTO {
+    private List<Long> ingredientIds;
 }
