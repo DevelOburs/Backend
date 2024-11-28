@@ -37,9 +37,13 @@ spring:
             - Path=/notification-api/**
 
 eureka:
+  server:
+    enable-self-preservation: false
+
   client:
     register-with-eureka: true
     fetch-registry: true
+
 
 management:
   endpoints:
