@@ -1,6 +1,5 @@
 package com.fridgify.user_api.service;
 
-import com.fridgify.user_api.dto.UserAllergenDTO;
 import com.fridgify.user_api.model.User;
 import com.fridgify.user_api.model.Allergen;
 import com.fridgify.user_api.repository.UserRepository;
@@ -26,22 +25,19 @@ public class AllergenService {
         if (userOpt.isPresent()) {
             User user = userOpt.get();
 
-            // Check if the allergen already exists
             Optional<Allergen> existingAllergen = allergenRepository.findByUserAndAllergenId(user, allergenId);
             if (existingAllergen.isPresent()) {
-                return false; // Allergen already exists
+                return false;
             }
-
-            // Add new allergen
             Allergen allergen = new Allergen();
             allergen.setUser(user);
-            allergen.setAllergenId(allergenId); // Set allergen ID
+            allergen.setAllergenId(allergenId);
             allergenRepository.save(allergen);
 
             return true;
         }
 
-        return false; // User not found
+        return false;
     }
 
     public boolean removeAllergenFromUser(Long userId, Long allergenId) {
@@ -49,15 +45,13 @@ public class AllergenService {
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-
-            // Check if the allergen exists
             Optional<Allergen> allergenOpt = allergenRepository.findByUserAndAllergenId(user, allergenId);
             if (allergenOpt.isPresent()) {
                 allergenRepository.delete(allergenOpt.get());
-                return true; // Deletion successful
+                return true;
             }
         }
 
-        return false; // User or allergen not found
+        return false;
     }
 }
