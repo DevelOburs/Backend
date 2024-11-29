@@ -35,3 +35,10 @@ render'da servislere birkaç dakika istek gelmediğinde pasif hale geliyor. bu y
 neden hepsi render da değil diye sorabilirsiniz. uzun uğraşlar ve hatalar sonucunda böyle bir çözümde karar kılmak durumunda kaldım .d bir toplantı yapıp konuşabiliriz.
 
 hesap bilgileri wp den paylaşılacaktır.
+
+
+Swagger --->
+recipe: http://localhost:8081/swagger-ui/index.html#/fridge-controller
+auth: http://localhost:8083/swagger-ui/index.html#/
+user: http://localhost:8082/swagger-ui/index.html#/
+
