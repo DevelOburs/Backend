@@ -19,6 +19,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((auth) -> auth
+                    .requestMatchers(
+                            "/v3/api-docs/**",
+                            "/swagger-ui/**",
+                            "/swagger-ui.html"
+                    ).permitAll()
                     .anyRequest().permitAll()
             )
             .csrf(csrf -> csrf.ignoringRequestMatchers("/**"))
