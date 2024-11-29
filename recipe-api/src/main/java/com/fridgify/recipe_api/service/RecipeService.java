@@ -5,12 +5,13 @@ import com.fridgify.recipe_api.dto.RecipeDTO;
 import com.fridgify.recipe_api.model.Recipe;
 import com.fridgify.recipe_api.repository.RecipeRepository;
 import com.fridgify.recipe_api.repository.UserSavedRecipeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Slf4j
 @Service
 public class RecipeService {
 
@@ -52,7 +53,7 @@ public class RecipeService {
 
     public List<RecipeDTO> getRecipesByUserId(Long userId) {
         List<Recipe> recipes = recipeRepository.findRecipesByUserId(userId);
-
+        log.info("Recipes fetching by user id");
         return recipes.stream()
                 .map(recipe -> RecipeDTO.builder()
                         .id(recipe.getId())
