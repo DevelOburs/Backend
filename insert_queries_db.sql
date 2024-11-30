@@ -191,7 +191,7 @@ INSERT INTO fridge_ingredient (fridge_id, ingredient_id) VALUES
                                                              (1, 5);  -- Fridge 1 contains Eggs
 
 -- Insert data into the users table with a fridge ID reference
-INSERT INTO user (fridge_id, name, email, password, first_name, last_name)
+INSERT INTO user (fridge_id, username, email, password, first_name, last_name)
 VALUES (1, 'John Doe', 'johndoe@example.com', 'password123', 'John', 'Doe');
 INSERT INTO allergen (name) VALUES
                                 ('Peanuts'),
