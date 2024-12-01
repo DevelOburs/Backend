@@ -10,15 +10,9 @@ server:
 
 eureka:
   instance:
-    hostname: ${RECIPE_API_HOST:recipe-api-863962813656.europe-north1.run.app}
+    hostname: ${RECIPE_API_HOST:recipe-api-yikp.onrender.com}
     secure-port-enabled: true
     non-secure-port-enabled: false
   client:
     serviceUrl:
       defaultZone: http://${EUREKA_HOST:ec2-51-21-135-63.eu-north-1.compute.amazonaws.com}:8761/eureka/
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, info
