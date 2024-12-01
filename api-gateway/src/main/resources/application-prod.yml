@@ -7,3 +7,8 @@ eureka:
     client:
       serviceUrl:
         defaultZone: http://${EUREKA_HOST:ec2-51-21-135-63.eu-north-1.compute.amazonaws.com}:8761/eureka/
+
+api-urls:
+  user-api: https://user-api-ml66.onrender.com/actuator/health
+  recipe-api: https://recipe-api-yikp.onrender.com/actuator/health
+  auth-api: https://auth-api-i2v8.onrender.com/actuator/health

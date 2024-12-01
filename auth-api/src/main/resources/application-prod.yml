@@ -3,15 +3,9 @@ server:
 
 eureka:
   instance:
-    hostname: ${AUTH_API_HOST:auth-api-863962813656.europe-north1.run.app}
+    hostname: ${AUTH_API_HOST:auth-api-i2v8.onrender.com}
     secure-port-enabled: true
     non-secure-port-enabled: false
   client:
     serviceUrl:
       defaultZone: http://${EUREKA_HOST:ec2-51-21-135-63.eu-north-1.compute.amazonaws.com}:8761/eureka/
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, info

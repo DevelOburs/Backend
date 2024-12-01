@@ -7,3 +7,8 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+
+api-urls:
+  user-api: http://localhost:8082/actuator/health
+  recipe-api: http://localhost:8081/actuator/health
+  auth-api: http://localhost:8083/actuator/health
