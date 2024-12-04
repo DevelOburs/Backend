@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor  // JPA requires a no-argument constructor
-@AllArgsConstructor // This creates an all-argument constructor for Lombok's builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Recipe {
     @Id
@@ -25,8 +26,11 @@ public class Recipe {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false) // Establish the foreign key
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = true)
     private User user;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @Column(name = "like_count", nullable = false)
     private Long likeCount = 0L;
@@ -36,4 +40,7 @@ public class Recipe {
 
     @Column(name = "save_count", nullable = false)
     private Long saveCount = 0L;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecipeIngredient> ingredients;
 }

@@ -1,8 +1,12 @@
 package com.fridgify.recipe_api.controller;
 
 import com.fridgify.recipe_api.dto.RecipeDTO;
+import com.fridgify.recipe_api.model.Ingredient;
 import com.fridgify.recipe_api.model.Recipe;
+import com.fridgify.recipe_api.model.RecipeIngredient;
 import com.fridgify.recipe_api.model.User;
+import com.fridgify.recipe_api.repository.IngredientRepository;
+import com.fridgify.recipe_api.repository.RecipeRepository;
 import com.fridgify.recipe_api.service.RecipeService;
 import com.fridgify.recipe_api.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -57,22 +61,26 @@ public class RecipeController {
         return ResponseEntity.ok(recipeDTO);
     }
 
-    @PostMapping
-    public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO) {
-        if(recipeDTO.getUserId() == null) {recipeDTO.setUserId((long)3);}
-        Recipe newRecipe = recipeDTO.toModel(); // Convert RecipeDTO to Recipe
-        newRecipe.setUser(userService.getUserById(recipeDTO.getUserId()));
-        Recipe savedRecipe = recipeService.createRecipe(newRecipe);
-
-        RecipeDTO responseDTO = RecipeDTO.builder()
-                .id(savedRecipe.getId())
-                .name(savedRecipe.getName())
-                .description(savedRecipe.getDescription())
-                .user(User.builder().id(savedRecipe.getUser().getId()).build())
-                .build();
-
-        return ResponseEntity.ok(responseDTO);
+@PostMapping
+public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO, @RequestParam List<String> ingredients) {
+    if (recipeDTO.getUserId() == null) {
+        recipeDTO.setUserId(3L);
     }
+    Recipe newRecipe = recipeDTO.toModel(); // Convert RecipeDTO to Recipe
+    newRecipe.setUser(userService.getUserById(recipeDTO.getUserId()));
+    Recipe savedRecipe = recipeService.createRecipe(newRecipe, ingredients);
+
+    // Convert to DTO
+    RecipeDTO responseDTO = RecipeDTO.builder()
+            .id(savedRecipe.getId())
+            .name(savedRecipe.getName())
+            .description(savedRecipe.getDescription())
+            .user(User.builder().id(savedRecipe.getUser().getId()).build())
+            .ingredients(ingredients)
+            .build();
+
+    return ResponseEntity.ok(responseDTO);
+}
 
     @PutMapping("/{id}")
     public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable Long id, @RequestBody RecipeDTO recipeDTO) {

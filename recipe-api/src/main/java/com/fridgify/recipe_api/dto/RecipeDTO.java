@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.List;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +26,7 @@ public class RecipeDTO {
     private Long likeCount;
     private Long commentCount;
     private Long saveCount;
+    private List<String> ingredients;
 
     @JsonIgnore
     private User user; // Used internally to map the user entity
