@@ -45,6 +45,7 @@ public class AuthController {
             // Generate JWT token
             String token = jwtUtil.generateToken(loginUserDTO.getUsername());
             TokenDTO tokenResponse = TokenDTO.builder()
+                    .userId(response.getBody().get().getUserId())
                     .token(token)
                     .username(response.getBody().get().getUsername())
                     .email(response.getBody().get().getEmail())
