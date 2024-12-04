@@ -96,3 +96,7 @@ jobs:
           cd recipe-api
           docker build -t develoburs/recipe-api:latest --platform=linux/amd64 .
           docker push develoburs/recipe-api:latest
+
+      - uses: geekyeggo/delete-artifact@v5
+        with:
+          name: jar-files
