@@ -52,7 +52,8 @@ public class RecipeService {
                             .orElseThrow(() -> new RuntimeException("Ingredient not found: " + ingredientName));
                     return RecipeIngredient.builder()
                             .recipe(savedRecipe)
-                            .ingredient(ingredient)
+                            .ingredientId(ingredient.getId())
+                            .recipeId(savedRecipe.getId())
                             .quantity("default quantity") // Set default quantity or get from request
                             .build();
                 })
