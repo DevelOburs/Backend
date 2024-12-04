@@ -25,6 +25,7 @@ public class RecipeDTO {
     private Long likeCount;
     private Long commentCount;
     private Long saveCount;
+    private String imageUrl;
 
     @JsonIgnore
     private User user; // Used internally to map the user entity
@@ -37,7 +38,9 @@ public class RecipeDTO {
                 .user(User.builder().id(this.userId).build())
                 .likeCount(this.likeCount)
                 .commentCount(this.commentCount)
+                .saveCount(this.saveCount)
                 .createdAt(LocalDateTime.now())
+                .imageUrl(this.imageUrl)
                 .build();
     }
 }

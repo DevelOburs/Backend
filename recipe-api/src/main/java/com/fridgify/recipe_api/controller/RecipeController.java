@@ -40,6 +40,10 @@ public class RecipeController {
                         .description(recipe.getDescription())
                         .likeCount(recipe.getLikeCount())
                         .commentCount(recipe.getCommentCount())
+                        .saveCount(recipe.getSaveCount())
+                        .imageUrl(recipe.getImageUrl())
+                        .createdAt(recipe.getCreatedAt())
+                        .userId(recipe.getUser().getId())
                         .build())
                 .collect(Collectors.toList());
 
@@ -53,6 +57,12 @@ public class RecipeController {
                 .id(recipe.getId())
                 .name(recipe.getName())
                 .description(recipe.getDescription())
+                .likeCount(recipe.getLikeCount())
+                .commentCount(recipe.getCommentCount())
+                .saveCount(recipe.getSaveCount())
+                .imageUrl(recipe.getImageUrl())
+                .createdAt(recipe.getCreatedAt())
+                .userId(recipe.getUser().getId())
                 .build();
         return ResponseEntity.ok(recipeDTO);
     }
@@ -68,7 +78,12 @@ public class RecipeController {
                 .id(savedRecipe.getId())
                 .name(savedRecipe.getName())
                 .description(savedRecipe.getDescription())
-                .user(User.builder().id(savedRecipe.getUser().getId()).build())
+                .likeCount(savedRecipe.getLikeCount())
+                .commentCount(savedRecipe.getCommentCount())
+                .saveCount(savedRecipe.getSaveCount())
+                .imageUrl(savedRecipe.getImageUrl())
+                .createdAt(savedRecipe.getCreatedAt())
+                .userId(savedRecipe.getUser().getId())
                 .build();
 
         return ResponseEntity.ok(responseDTO);
@@ -80,6 +95,7 @@ public class RecipeController {
                 .id(id)
                 .name(recipeDTO.getName())
                 .description(recipeDTO.getDescription())
+                .imageUrl(recipeDTO.getImageUrl())
                 .build();
         Recipe savedRecipe = recipeService.updateRecipe(id, updatedRecipe);
 
@@ -87,6 +103,12 @@ public class RecipeController {
                 .id(savedRecipe.getId())
                 .name(savedRecipe.getName())
                 .description(savedRecipe.getDescription())
+                .likeCount(savedRecipe.getLikeCount())
+                .commentCount(savedRecipe.getCommentCount())
+                .saveCount(savedRecipe.getSaveCount())
+                .imageUrl(savedRecipe.getImageUrl())
+                .createdAt(savedRecipe.getCreatedAt())
+                .userId(savedRecipe.getUser().getId())
                 .build();
 
         return ResponseEntity.ok(responseDTO);

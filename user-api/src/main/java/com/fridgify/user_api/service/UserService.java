@@ -44,6 +44,7 @@ public class UserService {
         userRepository.save(user);
 
         return Optional.ofNullable(ResponseUserDTO.builder()
+                        .userId(user.getId())
                         .email(registerUserDTO.getEmail())
                         .username(registerUserDTO.getUsername())
                         .firstName(registerUserDTO.getFirstName())
@@ -61,6 +62,7 @@ public class UserService {
         Optional<User> existing_user = user_with_email.isPresent() ? user_with_email : user_with_username;
         if(passwordEncoder.matches(loginUserDTO.getPassword(), existing_user.get().getPassword())){
             return Optional.ofNullable(ResponseUserDTO.builder()
+                    .userId(existing_user.get().getId())
                     .email(existing_user.get().getEmail())
                     .username(existing_user.get().getUsername())
                     .firstName(existing_user.get().getFirstName())
