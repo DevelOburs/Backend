@@ -36,4 +36,7 @@ public class Recipe {
 
     @Column(name = "save_count", nullable = false)
     private Long saveCount = 0L;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 }

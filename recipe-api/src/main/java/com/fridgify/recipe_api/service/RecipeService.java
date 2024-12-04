@@ -41,8 +41,16 @@ public class RecipeService {
 
     public Recipe updateRecipe(Long id, Recipe updatedRecipe) {
         Recipe existingRecipe = recipeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recipe not found with id " + id));
-        existingRecipe.setName(updatedRecipe.getName());
-        existingRecipe.setDescription(updatedRecipe.getDescription());
+        if (updatedRecipe.getName() != null) {
+            existingRecipe.setName(updatedRecipe.getName());
+        }
+        if (updatedRecipe.getDescription() != null) {
+            existingRecipe.setDescription(updatedRecipe.getDescription());
+        }
+        if (updatedRecipe.getImageUrl() != null) {
+            existingRecipe.setImageUrl(updatedRecipe.getImageUrl());
+
+        }
         return recipeRepository.save(existingRecipe);
     }
 
