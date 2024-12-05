@@ -44,6 +44,10 @@ public class RecipeController {
                         .description(recipe.getDescription())
                         .likeCount(recipe.getLikeCount())
                         .commentCount(recipe.getCommentCount())
+                        .ingredients(recipe.getIngredients().stream()
+                                .map(RecipeIngredient::getIngredient)
+                                .map(Ingredient::getName)
+                                .collect(Collectors.toList()))
                         .build())
                 .collect(Collectors.toList());
 
@@ -57,18 +61,22 @@ public class RecipeController {
                 .id(recipe.getId())
                 .name(recipe.getName())
                 .description(recipe.getDescription())
+                .ingredients(recipe.getIngredients().stream()
+                        .map(RecipeIngredient::getIngredient)
+                        .map(Ingredient::getName)
+                        .collect(Collectors.toList()))
                 .build();
         return ResponseEntity.ok(recipeDTO);
     }
 
 @PostMapping
-public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO, @RequestParam List<String> ingredients) {
+public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO) {
     if (recipeDTO.getUserId() == null) {
         recipeDTO.setUserId(3L);
     }
     Recipe newRecipe = recipeDTO.toModel(); // Convert RecipeDTO to Recipe
     newRecipe.setUser(userService.getUserById(recipeDTO.getUserId()));
-    Recipe savedRecipe = recipeService.createRecipe(newRecipe, ingredients);
+    Recipe savedRecipe = recipeService.createRecipe(newRecipe, recipeDTO.getIngredients());
 
     // Convert to DTO
     RecipeDTO responseDTO = RecipeDTO.builder()
@@ -76,7 +84,7 @@ public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO, 
             .name(savedRecipe.getName())
             .description(savedRecipe.getDescription())
             .user(User.builder().id(savedRecipe.getUser().getId()).build())
-            .ingredients(ingredients)
+            .ingredients(recipeDTO.getIngredients())
             .build();
 
     return ResponseEntity.ok(responseDTO);
