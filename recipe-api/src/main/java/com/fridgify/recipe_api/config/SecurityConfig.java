@@ -24,7 +24,7 @@ public class SecurityConfig {
                             "/swagger-ui.html",
                             "/actuator/**"
                     ).permitAll()
-                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
             )
             .csrf(csrf -> csrf.ignoringRequestMatchers("/**"))
             .sessionManagement(session -> session

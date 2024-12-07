@@ -34,17 +34,7 @@ public class RecipeController {
 
         // Convert Recipe to RecipeDTO
         List<RecipeDTO> recipeDTOs = recipes.stream()
-                .map(recipe -> RecipeDTO.builder()
-                        .id(recipe.getId())
-                        .name(recipe.getName())
-                        .description(recipe.getDescription())
-                        .likeCount(recipe.getLikeCount())
-                        .commentCount(recipe.getCommentCount())
-                        .saveCount(recipe.getSaveCount())
-                        .imageUrl(recipe.getImageUrl())
-                        .createdAt(recipe.getCreatedAt())
-                        .userId(recipe.getUser().getId())
-                        .build())
+                .map(RecipeDTO::toResponse)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(recipeDTOs);
@@ -53,17 +43,7 @@ public class RecipeController {
     @GetMapping("/{id}")
     public ResponseEntity<RecipeDTO> getRecipeById(@PathVariable Long id) {
         Recipe recipe = recipeService.getRecipeById(id);
-        RecipeDTO recipeDTO = RecipeDTO.builder()
-                .id(recipe.getId())
-                .name(recipe.getName())
-                .description(recipe.getDescription())
-                .likeCount(recipe.getLikeCount())
-                .commentCount(recipe.getCommentCount())
-                .saveCount(recipe.getSaveCount())
-                .imageUrl(recipe.getImageUrl())
-                .createdAt(recipe.getCreatedAt())
-                .userId(recipe.getUser().getId())
-                .build();
+        RecipeDTO recipeDTO = RecipeDTO.toResponse(recipe);
         return ResponseEntity.ok(recipeDTO);
     }
 
@@ -74,17 +54,7 @@ public class RecipeController {
         newRecipe.setUser(userService.getUserById(recipeDTO.getUserId()));
         Recipe savedRecipe = recipeService.createRecipe(newRecipe);
 
-        RecipeDTO responseDTO = RecipeDTO.builder()
-                .id(savedRecipe.getId())
-                .name(savedRecipe.getName())
-                .description(savedRecipe.getDescription())
-                .likeCount(savedRecipe.getLikeCount())
-                .commentCount(savedRecipe.getCommentCount())
-                .saveCount(savedRecipe.getSaveCount())
-                .imageUrl(savedRecipe.getImageUrl())
-                .createdAt(savedRecipe.getCreatedAt())
-                .userId(savedRecipe.getUser().getId())
-                .build();
+        RecipeDTO responseDTO = RecipeDTO.toResponse(savedRecipe);
 
         return ResponseEntity.ok(responseDTO);
     }
@@ -99,17 +69,7 @@ public class RecipeController {
                 .build();
         Recipe savedRecipe = recipeService.updateRecipe(id, updatedRecipe);
 
-        RecipeDTO responseDTO = RecipeDTO.builder()
-                .id(savedRecipe.getId())
-                .name(savedRecipe.getName())
-                .description(savedRecipe.getDescription())
-                .likeCount(savedRecipe.getLikeCount())
-                .commentCount(savedRecipe.getCommentCount())
-                .saveCount(savedRecipe.getSaveCount())
-                .imageUrl(savedRecipe.getImageUrl())
-                .createdAt(savedRecipe.getCreatedAt())
-                .userId(savedRecipe.getUser().getId())
-                .build();
+        RecipeDTO responseDTO = RecipeDTO.toResponse(savedRecipe);
 
         return ResponseEntity.ok(responseDTO);
     }
@@ -121,11 +81,13 @@ public class RecipeController {
     }
     @GetMapping("/getRecipes/{userId}")
     public ResponseEntity<List<RecipeDTO>> getRecipesByUserId(@PathVariable Long userId) {
-        List<RecipeDTO> recipes = recipeService.getRecipesByUserId(userId);
+        List<Recipe> recipes = recipeService.getRecipesByUserId(userId);
         if (recipes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(recipes);
+        return ResponseEntity.ok(recipes.stream()
+                .map(RecipeDTO::toResponse)
+                .collect(Collectors.toList()));
     }
 }
