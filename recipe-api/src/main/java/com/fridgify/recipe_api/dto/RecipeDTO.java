@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-// Using Lombok annotations to avoid boilerplate code
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,26 +20,42 @@ public class RecipeDTO {
     private String name;
     private String description;
     private LocalDateTime createdAt;
-    private Long userId; // This field will be populated from JSON
+    private Long userId;
+    private String userUsername;
+    private String userFirstName;
+    private String userLastName;
     private Long likeCount;
     private Long commentCount;
     private Long saveCount;
     private String imageUrl;
 
-    @JsonIgnore
-    private User user; // Used internally to map the user entity
-    // You can add other fields if necessary, but these are the basics
 
     public Recipe toModel() {
         return Recipe.builder()
                 .name(this.name)
                 .description(this.description)
-                .user(User.builder().id(this.userId).build())
                 .likeCount(this.likeCount)
                 .commentCount(this.commentCount)
                 .saveCount(this.saveCount)
                 .createdAt(LocalDateTime.now())
                 .imageUrl(this.imageUrl)
+                .build();
+    }
+
+    public static RecipeDTO toResponse(Recipe recipe) {
+        return builder()
+                .id(recipe.getId())
+                .name(recipe.getName())
+                .description(recipe.getDescription())
+                .likeCount(recipe.getLikeCount())
+                .commentCount(recipe.getCommentCount())
+                .saveCount(recipe.getSaveCount())
+                .imageUrl(recipe.getImageUrl())
+                .createdAt(recipe.getCreatedAt())
+                .userId(recipe.getUser().getId())
+                .userUsername(recipe.getUser().getUsername())
+                .userFirstName(recipe.getUser().getFirstName())
+                .userLastName(recipe.getUser().getLastName())
                 .build();
     }
 }
