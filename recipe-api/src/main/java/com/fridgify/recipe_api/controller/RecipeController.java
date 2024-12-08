@@ -32,7 +32,6 @@ public class RecipeController {
     public ResponseEntity<List<RecipeDTO>> getAllRecipes(
             @RequestParam(value = "limit", required = false) Integer limit,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
-
         // Fetch recipes with pagination
         List<Recipe> recipes = recipeService.getAllRecipes(limit, pageNumber);
 
@@ -97,12 +96,14 @@ public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO) 
                 .name(recipeDTO.getName())
                 .description(recipeDTO.getDescription())
                 .build();
-        Recipe savedRecipe = recipeService.updateRecipe(id, updatedRecipe);
+        Recipe savedRecipe = recipeService.updateRecipe(id, updatedRecipe, recipeDTO.getIngredients());
 
         RecipeDTO responseDTO = RecipeDTO.builder()
                 .id(savedRecipe.getId())
                 .name(savedRecipe.getName())
                 .description(savedRecipe.getDescription())
+                .user(User.builder().id(savedRecipe.getUser().getId()).build())
+                .ingredients(recipeDTO.getIngredients())
                 .build();
 
         return ResponseEntity.ok(responseDTO);

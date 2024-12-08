@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,15 +65,35 @@ public class RecipeService {
         return savedRecipe;
     }
 
-    public Recipe updateRecipe(Long id, Recipe updatedRecipe) {
+    public Recipe updateRecipe(Long id, Recipe updatedRecipe, List<String> ingredients) {
         Recipe existingRecipe = recipeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recipe not found with id " + id));
         existingRecipe.setName(updatedRecipe.getName());
         existingRecipe.setDescription(updatedRecipe.getDescription());
+
+        if (ingredients != null) {
+            List<RecipeIngredient> recipeIngredients = ingredients.stream()
+                    .map(ingredientName -> {
+                        Ingredient ingredient = ingredientRepository.findByName(ingredientName)
+                                .orElseThrow(() -> new RuntimeException("Ingredient not found: " + ingredientName));
+                        return RecipeIngredient.builder()
+                                .recipe(existingRecipe)
+                                .ingredientId(ingredient.getId())
+                                .recipeId(existingRecipe.getId())
+                                .quantity("default quantity") // Set default quantity or get from request
+                                .build();
+                    })
+                    .collect(Collectors.toList());
+
+            recipeIngredientRepository.deleteByRecipeId(existingRecipe.getId());
+            recipeIngredientRepository.saveAll(recipeIngredients);
+        }
         return recipeRepository.save(existingRecipe);
     }
 
+    @Transactional
     public void deleteRecipe(Long id) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recipe not found with id " + id));
+        recipeIngredientRepository.deleteByRecipeId(id);
         recipeRepository.delete(recipe);
     }
 
