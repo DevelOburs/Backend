@@ -1,8 +1,7 @@
 package com.fridgify.recipe_api.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fridgify.recipe_api.model.Recipe;
-import com.fridgify.recipe_api.model.User;
+import com.fridgify.recipe_api.model.RecipeCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +27,9 @@ public class RecipeDTO {
     private Long commentCount;
     private Long saveCount;
     private String imageUrl;
+    private RecipeCategory category;
+    private Long calories;
+    private Long cooking_time;
 
 
     public Recipe toModel() {
@@ -39,6 +41,9 @@ public class RecipeDTO {
                 .saveCount(this.saveCount)
                 .createdAt(LocalDateTime.now())
                 .imageUrl(this.imageUrl)
+                .category(this.category)
+                .calories(this.calories)
+                .cooking_time(this.cooking_time)
                 .build();
     }
 
@@ -56,6 +61,9 @@ public class RecipeDTO {
                 .userUsername(recipe.getUser().getUsername())
                 .userFirstName(recipe.getUser().getFirstName())
                 .userLastName(recipe.getUser().getLastName())
+                .category(recipe.getCategory())
+                .calories(recipe.getCalories())
+                .cooking_time(recipe.getCooking_time())
                 .build();
     }
 }

@@ -17,8 +17,8 @@ public class Ingredient {
     @Column(nullable = false)
     private String name;
 
-    @Column
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private IngredientCategory category;
 
     @Column
     private String imageUrl;

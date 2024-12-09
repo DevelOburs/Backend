@@ -2,12 +2,14 @@ package com.fridgify.recipe_api.controller;
 
 import com.fridgify.recipe_api.dto.IngredientDTO;
 import com.fridgify.recipe_api.dto.IngredientIdsDTO;
+import com.fridgify.recipe_api.model.IngredientCategory;
 import com.fridgify.recipe_api.service.FridgeService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -20,10 +22,21 @@ public class FridgeController {
         this.fridgeService = fridgeService;
     }
 
+    // gets all ingredient categories if need be
+    @GetMapping("/categories")
+    public ResponseEntity<List<String>> getIngredientCategories() {
+        return new ResponseEntity<>(
+                Arrays.stream(IngredientCategory.values())
+                        .map(IngredientCategory::name)
+                        .toList(),
+                HttpStatus.OK
+        );
+    }
+
     @GetMapping("{userId}/inFridge")
     public ResponseEntity<List<IngredientDTO>> getAllIngredientsInFridge(@PathVariable Long userId,
                                                                @RequestParam(required = false) String nameFilter,
-                                                               @RequestParam(required = false) List<String> categoryFilters) {
+                                                               @RequestParam(required = false) List<IngredientCategory> categoryFilters) {
         return new ResponseEntity<>(fridgeService.getAllIngredientsInFridge(userId, nameFilter, categoryFilters), HttpStatus.OK);
     }
 
@@ -31,7 +44,7 @@ public class FridgeController {
     public ResponseEntity<Page<IngredientDTO>> getAllIngredientsInFridgePaginated(
             @PathVariable Long userId,
             @RequestParam(required = false) String nameFilter,
-            @RequestParam(required = false) List<String> categoryFilters,
+            @RequestParam(required = false) List<IngredientCategory> categoryFilters,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return new ResponseEntity<>(fridgeService.getAllIngredientsInFridge(userId, nameFilter, categoryFilters, page, size), HttpStatus.OK);
@@ -39,21 +52,21 @@ public class FridgeController {
 
     @GetMapping("{userId}/inFridge/{ingredientCategory}")
     public ResponseEntity<List<IngredientDTO>> getAllIngredientsInFridgeByCategory(@PathVariable Long userId,
-                                                                      @PathVariable String ingredientCategory) {
+                                                                      @PathVariable IngredientCategory ingredientCategory) {
         return new ResponseEntity<>(fridgeService.getAllIngredientsInFridge(userId, null, List.of(ingredientCategory)), HttpStatus.OK);
     }
 
     @GetMapping("{userId}/notInFridge")
     public ResponseEntity<List<IngredientDTO>> getIngredientsNotInFridge(@PathVariable Long userId,
                                                                          @RequestParam(required = false) String nameFilter,
-                                                                         @RequestParam(required = false) List<String> categoryFilters) {
+                                                                         @RequestParam(required = false) List<IngredientCategory> categoryFilters) {
         return new ResponseEntity<>(fridgeService.getIngredientsNotInFridge(userId, nameFilter, categoryFilters), HttpStatus.OK);
     }
 
     @GetMapping("{userId}/notInFridgePaginated")
     public ResponseEntity<Page<IngredientDTO>> getIngredientsNotInFridge(@PathVariable Long userId,
                                                                          @RequestParam(required = false) String nameFilter,
-                                                                         @RequestParam(required = false) List<String> categoryFilters,
+                                                                         @RequestParam(required = false) List<IngredientCategory> categoryFilters,
                                                                          @RequestParam(defaultValue = "0") int page,
                                                                          @RequestParam(defaultValue = "10") int size) {
         return new ResponseEntity<>(fridgeService.getIngredientsNotInFridge(userId, nameFilter, categoryFilters, page, size), HttpStatus.OK);
