@@ -1,8 +1,8 @@
 package com.fridgify.recipe_api.service;
 
 import com.fridgify.recipe_api.common.exception.ResourceNotFoundException;
-import com.fridgify.recipe_api.dto.RecipeDTO;
 import com.fridgify.recipe_api.model.Recipe;
+import com.fridgify.recipe_api.model.RecipeCategory;
 import com.fridgify.recipe_api.repository.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -48,7 +48,15 @@ public class RecipeService {
         }
         if (updatedRecipe.getImageUrl() != null) {
             existingRecipe.setImageUrl(updatedRecipe.getImageUrl());
-
+        }
+        if (updatedRecipe.getCategory() != null) {
+            existingRecipe.setCategory(updatedRecipe.getCategory());
+        }
+        if (updatedRecipe.getCalories() != null) {
+            existingRecipe.setCalories(updatedRecipe.getCalories());
+        }
+        if (updatedRecipe.getCooking_time() != null) {
+            existingRecipe.setCooking_time(updatedRecipe.getCooking_time());
         }
         return recipeRepository.save(existingRecipe);
     }
@@ -61,6 +69,10 @@ public class RecipeService {
     public List<Recipe> getRecipesByUserId(Long userId) {
         log.info("Recipes fetching by user id");
         return recipeRepository.findRecipesByUserId(userId);
+    }
+
+    public List<RecipeCategory> getAllCategories() {
+        return List.of(RecipeCategory.values());
     }
 
 }

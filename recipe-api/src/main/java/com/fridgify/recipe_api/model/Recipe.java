@@ -39,4 +39,13 @@ public class Recipe {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @Enumerated(EnumType.STRING)
+    private RecipeCategory category;
+
+    @Column(name = "calories", nullable = false)
+    private Long calories;
+
+    @Column(name = "cooking_time", nullable = false)
+    private Long cooking_time;
 }

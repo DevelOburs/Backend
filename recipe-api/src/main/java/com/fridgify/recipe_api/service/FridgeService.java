@@ -2,6 +2,7 @@ package com.fridgify.recipe_api.service;
 
 import com.fridgify.recipe_api.dto.IngredientDTO;
 import com.fridgify.recipe_api.model.Ingredient;
+import com.fridgify.recipe_api.model.IngredientCategory;
 import com.fridgify.recipe_api.model.User;
 import com.fridgify.recipe_api.repository.IngredientRepository;
 import com.fridgify.recipe_api.repository.UserRepository;
@@ -29,7 +30,7 @@ public class FridgeService {
 
     public List<IngredientDTO> getAllIngredientsInFridge(Long userId,
                                                String nameFilter,
-                                               List<String> categoryFilters) {
+                                               List<IngredientCategory> categoryFilters) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -52,7 +53,7 @@ public class FridgeService {
 
     public Page<IngredientDTO> getAllIngredientsInFridge(Long userId,
                                                          String nameFilter,
-                                                         List<String> categoryFilters,
+                                                         List<IngredientCategory> categoryFilters,
                                                          int page,
                                                          int size) {
 
@@ -69,7 +70,7 @@ public class FridgeService {
 
     public List<IngredientDTO> getIngredientsNotInFridge(Long userId,
                                                          String nameFilter,
-                                                         List<String> categoryFilters) {
+                                                         List<IngredientCategory> categoryFilters) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
 
@@ -106,7 +107,7 @@ public class FridgeService {
 
     public Page<IngredientDTO> getIngredientsNotInFridge(Long userId,
                                                          String nameFilter,
-                                                         List<String> categoryFilters,
+                                                         List<IngredientCategory> categoryFilters,
                                                          int page,
                                                          int size) {
 
@@ -147,8 +148,8 @@ public class FridgeService {
 
         Set<Ingredient> existingIngredients = new HashSet<>(user.getFridgeIngredients());
         ingredientsToAdd.stream()
-                .filter(ingredient -> !existingIngredients.contains(ingredient)) // Sadece yeni olanları filtrele
-                .forEach(user.getFridgeIngredients()::add); // Eklemeyi gerçekleştir
+                .filter(ingredient -> !existingIngredients.contains(ingredient))
+                .forEach(user.getFridgeIngredients()::add);
 
         userRepository.save(user);
 

@@ -1,6 +1,7 @@
 package com.fridgify.recipe_api.dto;
 
 import com.fridgify.recipe_api.model.Ingredient;
+import com.fridgify.recipe_api.model.IngredientCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class IngredientDTO {
     private long id;
     private String name;
-    private String category;
+    private IngredientCategory category;
     private String imageUrl;
 
     public IngredientDTO(Ingredient ingredient) {
