@@ -20,6 +20,7 @@ CREATE TABLE recipe (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
+    category VARCHAR(50),
     calories INT UNSIGNED,
     cooking_time INT UNSIGNED,
     user_id BIGINT UNSIGNED,
