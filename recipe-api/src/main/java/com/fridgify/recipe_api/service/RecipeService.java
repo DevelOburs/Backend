@@ -4,7 +4,6 @@ import com.fridgify.recipe_api.common.exception.ResourceNotFoundException;
 import com.fridgify.recipe_api.dto.RecipeDTO;
 import com.fridgify.recipe_api.model.Recipe;
 import com.fridgify.recipe_api.repository.RecipeRepository;
-import com.fridgify.recipe_api.repository.UserSavedRecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -59,17 +58,9 @@ public class RecipeService {
         recipeRepository.delete(recipe);
     }
 
-    public List<RecipeDTO> getRecipesByUserId(Long userId) {
-        List<Recipe> recipes = recipeRepository.findRecipesByUserId(userId);
+    public List<Recipe> getRecipesByUserId(Long userId) {
         log.info("Recipes fetching by user id");
-        return recipes.stream()
-                .map(recipe -> RecipeDTO.builder()
-                        .id(recipe.getId())
-                        .name(recipe.getName())
-                        .description((recipe.getDescription()))
-                        .user(recipe.getUser())
-                        .build())
-                .toList();
+        return recipeRepository.findRecipesByUserId(userId);
     }
 
 }
