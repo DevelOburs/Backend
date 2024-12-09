@@ -42,4 +42,10 @@ public class Recipe {
 
     @Enumerated(EnumType.STRING)
     private RecipeCategory category;
+
+    @Column(name = "calories", nullable = false)
+    private Long calories;
+
+    @Column(name = "cooking_time", nullable = false)
+    private Long cooking_time;
 }

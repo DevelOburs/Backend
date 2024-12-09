@@ -7121,3 +7121,6 @@ INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity) VALUES (301, 
 UPDATE recipe
 SET user_id = FLOOR(1 + RAND() * (10 - 1 + 1))
 WHERE user_id IS NULL;
+
+DELETE FROM recipe
+WHERE category != BINARY UPPER(category);

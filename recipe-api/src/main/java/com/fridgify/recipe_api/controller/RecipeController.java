@@ -2,13 +2,12 @@ package com.fridgify.recipe_api.controller;
 
 import com.fridgify.recipe_api.dto.RecipeDTO;
 import com.fridgify.recipe_api.model.Recipe;
-import com.fridgify.recipe_api.model.User;
+import com.fridgify.recipe_api.model.RecipeCategory;
 import com.fridgify.recipe_api.service.RecipeService;
 import com.fridgify.recipe_api.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,6 +65,9 @@ public class RecipeController {
                 .name(recipeDTO.getName())
                 .description(recipeDTO.getDescription())
                 .imageUrl(recipeDTO.getImageUrl())
+                .cooking_time(recipeDTO.getCooking_time())
+                .calories(recipeDTO.getCalories())
+                .category(recipeDTO.getCategory())
                 .build();
         Recipe savedRecipe = recipeService.updateRecipe(id, updatedRecipe);
 
@@ -90,4 +92,12 @@ public class RecipeController {
                 .map(RecipeDTO::toResponse)
                 .collect(Collectors.toList()));
     }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<RecipeCategory>> getAllRecipeCategories() {
+        List<RecipeCategory> categories = recipeService.getAllCategories();
+
+        return ResponseEntity.ok(categories);
+    }
+
 }
