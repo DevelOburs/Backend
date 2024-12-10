@@ -65,6 +65,7 @@ public class RecipeService {
         return savedRecipe;
     }
 
+    @Transactional
     public Recipe updateRecipe(Long id, Recipe updatedRecipe, List<String> ingredients) {
         Recipe existingRecipe = recipeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recipe not found with id " + id));
         existingRecipe.setName(updatedRecipe.getName());
