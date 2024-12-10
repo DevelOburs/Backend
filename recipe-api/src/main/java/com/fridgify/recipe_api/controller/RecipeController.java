@@ -1,11 +1,8 @@
 package com.fridgify.recipe_api.controller;
 
 import com.fridgify.recipe_api.dto.RecipeDTO;
-import com.fridgify.recipe_api.model.Ingredient;
 import com.fridgify.recipe_api.model.Recipe;
 import com.fridgify.recipe_api.model.RecipeCategory;
-import com.fridgify.recipe_api.model.RecipeIngredient;
-import com.fridgify.recipe_api.model.User;
 
 import com.fridgify.recipe_api.service.RecipeService;
 import com.fridgify.recipe_api.service.UserService;
@@ -38,10 +35,7 @@ public class RecipeController {
         List<RecipeDTO> recipeDTOs = recipes.stream()
                 .map(RecipeDTO::toResponse)
                 .collect(Collectors.toList());
-/** .ingredients(recipe.getIngredients().stream()
-                .map(RecipeIngredient::getIngredient)
-                .map(Ingredient::getName)
-                .collect(Collectors.toList()))**/
+
         return ResponseEntity.ok(recipeDTOs);
     }
 
@@ -87,6 +81,7 @@ public class RecipeController {
         recipeService.deleteRecipe(id);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/getRecipes/{userId}")
     public ResponseEntity<List<RecipeDTO>> getRecipesByUserId(@PathVariable Long userId) {
         List<Recipe> recipes = recipeService.getRecipesByUserId(userId);
@@ -102,7 +97,6 @@ public class RecipeController {
     @GetMapping("/categories")
     public ResponseEntity<List<RecipeCategory>> getAllRecipeCategories() {
         List<RecipeCategory> categories = recipeService.getAllCategories();
-
         return ResponseEntity.ok(categories);
     }
 

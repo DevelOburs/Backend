@@ -1,7 +1,6 @@
 package com.fridgify.recipe_api.service;
 
 import com.fridgify.recipe_api.common.exception.ResourceNotFoundException;
-import com.fridgify.recipe_api.dto.RecipeDTO;
 import com.fridgify.recipe_api.model.Ingredient;
 import com.fridgify.recipe_api.model.Recipe;
 import com.fridgify.recipe_api.model.RecipeIngredient;
@@ -45,24 +44,25 @@ public class RecipeService {
         return recipeRepository.findRecipeById(id).orElseThrow(() -> new ResourceNotFoundException("Recipe not found with id " + id));
     }
 
+    @Transactional
     public Recipe createRecipe(Recipe recipe, List<String> ingredients) {
         Recipe savedRecipe = recipeRepository.save(recipe);
 
         List<RecipeIngredient> recipeIngredients = ingredients.stream()
                 .map(ingredientName -> {
-                    Ingredient ingredient = ingredientRepository.findByName(ingredientName)
+                    Ingredient ingredient = ingredientRepository.findByNameCaseSensitive(ingredientName)
                             .orElseThrow(() -> new RuntimeException("Ingredient not found: " + ingredientName));
-                    return RecipeIngredient.builder()
-                            .recipe(savedRecipe)
-                            .ingredientId(ingredient.getId())
-                            .recipeId(savedRecipe.getId())
-                            .quantity("default quantity") // Set default quantity or get from request
-                            .build();
+                    return new RecipeIngredient(
+                            recipe.getId(),
+                            ingredient.getId(),
+                            recipe,
+                            ingredient,
+                            "default quantity");
                 })
                 .collect(Collectors.toList());
 
-        recipeIngredientRepository.saveAll(recipeIngredients);
-
+        recipeRepository.saveAndFlush(savedRecipe);
+        savedRecipe.updateIngredients(recipeIngredients);
         return savedRecipe;
     }
 
@@ -87,25 +87,21 @@ public class RecipeService {
         if (updatedRecipe.getCooking_time() != null) {
             existingRecipe.setCooking_time(updatedRecipe.getCooking_time());
         }
-        existingRecipe.setName(updatedRecipe.getName());
-        existingRecipe.setDescription(updatedRecipe.getDescription());
 
         if (ingredients != null) {
             List<RecipeIngredient> recipeIngredients = ingredients.stream()
                     .map(ingredientName -> {
-                        Ingredient ingredient = ingredientRepository.findByName(ingredientName)
+                        Ingredient ingredient = ingredientRepository.findByNameCaseSensitive(ingredientName)
                                 .orElseThrow(() -> new RuntimeException("Ingredient not found: " + ingredientName));
-                        return RecipeIngredient.builder()
-                                .recipe(existingRecipe)
-                                .ingredientId(ingredient.getId())
-                                .recipeId(existingRecipe.getId())
-                                .quantity("default quantity") // Set default quantity or get from request
-                                .build();
+                        return new RecipeIngredient(
+                                existingRecipe.getId(),
+                                ingredient.getId(),
+                                existingRecipe,
+                                ingredient,
+                                "default quantity");
                     })
-                    .collect(Collectors.toList());
-
-            recipeIngredientRepository.deleteByRecipeId(existingRecipe.getId());
-            recipeIngredientRepository.saveAll(recipeIngredients);
+                    .toList();
+            existingRecipe.updateIngredients(recipeIngredients);
         }
         return recipeRepository.save(existingRecipe);
     }
