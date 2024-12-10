@@ -49,7 +49,6 @@ public class Recipe {
 
     @Column(name = "cooking_time", nullable = false)
     private Long cooking_time;
-}
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeIngredient> ingredients;

@@ -12,7 +12,6 @@ import com.fridgify.recipe_api.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,11 +27,9 @@ public class RecipeController {
         this.userService = userService;
     }
 
-    @GetMapping
     public ResponseEntity<List<RecipeDTO>> getAllRecipes(
             @RequestParam(value = "limit", required = false) Integer limit,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
-
         // Fetch recipes with pagination
         List<Recipe> recipes = recipeService.getAllRecipes(limit, pageNumber);
 
@@ -40,20 +37,28 @@ public class RecipeController {
         List<RecipeDTO> recipeDTOs = recipes.stream()
                 .map(recipe -> RecipeDTO.builder()
                         .id(recipe.getId())
-                        .name(recipe.getName())
+                        .userUsername(recipe.getUser().getUsername())
+                        .userFirstName(recipe.getUser().getFirstName())
+                        .userLastName(recipe.getUser().getLastName())
                         .description(recipe.getDescription())
                         .likeCount(recipe.getLikeCount())
                         .commentCount(recipe.getCommentCount())
+                        .saveCount(recipe.getSaveCount())
+                        .imageUrl(recipe.getImageUrl())
+                        .category(recipe.getCategory())
+                        .createdAt(recipe.getCreatedAt())
+                        .calories(recipe.getCalories())
+                        .cooking_time(recipe.getCooking_time())
                         .ingredients(recipe.getIngredients().stream()
                                 .map(RecipeIngredient::getIngredient)
                                 .map(Ingredient::getName)
                                 .collect(Collectors.toList()))
                         .build())
-                .map(RecipeDTO::toResponse)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(recipeDTOs);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<RecipeDTO> getRecipeById(@PathVariable Long id) {
@@ -70,13 +75,25 @@ public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO) 
     Recipe newRecipe = recipeDTO.toModel(); // Convert RecipeDTO to Recipe
     newRecipe.setUser(userService.getUserById(recipeDTO.getUserId()));
     Recipe savedRecipe = recipeService.createRecipe(newRecipe, recipeDTO.getIngredients());
-
-        RecipeDTO responseDTO = RecipeDTO.toResponse(savedRecipe);
     // Convert to DTO
+
     RecipeDTO responseDTO = RecipeDTO.builder()
             .id(savedRecipe.getId())
+            .userUsername(savedRecipe.getUser().getUsername())
+            .userFirstName(savedRecipe.getUser().getFirstName())
+            .userLastName(savedRecipe.getUser().getLastName())
+            .description(savedRecipe.getDescription())
             .name(savedRecipe.getName())
             .description(savedRecipe.getDescription())
+            .likeCount(savedRecipe.getLikeCount())
+            .commentCount(savedRecipe.getCommentCount())
+            .saveCount(savedRecipe.getSaveCount())
+            .imageUrl(savedRecipe.getImageUrl())
+            .category(savedRecipe.getCategory())
+            .createdAt(savedRecipe.getCreatedAt())
+            .calories(savedRecipe.getCalories())
+            .cooking_time(savedRecipe.getCooking_time())
+            .ingredients(recipeDTO.getIngredients())
             .user(User.builder().id(savedRecipe.getUser().getId()).build())
             .ingredients(recipeDTO.getIngredients())
             .build();
@@ -104,8 +121,6 @@ public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO) 
                 .user(User.builder().id(savedRecipe.getUser().getId()).build())
                 .ingredients(recipeDTO.getIngredients())
                 .build();
-        RecipeDTO responseDTO = RecipeDTO.toResponse(savedRecipe);
-
         return ResponseEntity.ok(responseDTO);
     }
 
@@ -114,16 +129,14 @@ public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO) 
         recipeService.deleteRecipe(id);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/getRecipes/{userId}")
     public ResponseEntity<List<RecipeDTO>> getRecipesByUserId(@PathVariable Long userId) {
-        List<Recipe> recipes = recipeService.getRecipesByUserId(userId);
+        List<RecipeDTO> recipes = recipeService.getRecipesByUserId(userId);
         if (recipes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-
-        return ResponseEntity.ok(recipes.stream()
-                .map(RecipeDTO::toResponse)
-                .collect(Collectors.toList()));
+        return ResponseEntity.ok(recipes);
     }
 
     @GetMapping("/categories")

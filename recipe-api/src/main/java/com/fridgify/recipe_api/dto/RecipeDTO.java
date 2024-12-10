@@ -53,6 +53,10 @@ public class RecipeDTO {
                 .category(this.category)
                 .calories(this.calories)
                 .cooking_time(this.cooking_time)
+                .cooking_time(this.cooking_time)
+                .calories(this.calories)
+                .category(this.category)
+                .imageUrl(this.imageUrl)
                 .build();
     }
 
