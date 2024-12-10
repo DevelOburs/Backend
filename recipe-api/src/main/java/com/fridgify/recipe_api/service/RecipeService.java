@@ -7,6 +7,7 @@ import com.fridgify.recipe_api.model.Recipe;
 import com.fridgify.recipe_api.model.RecipeIngredient;
 import com.fridgify.recipe_api.repository.IngredientRepository;
 import com.fridgify.recipe_api.repository.RecipeIngredientRepository;
+import com.fridgify.recipe_api.model.RecipeCategory;
 import com.fridgify.recipe_api.repository.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -68,6 +69,24 @@ public class RecipeService {
     @Transactional
     public Recipe updateRecipe(Long id, Recipe updatedRecipe, List<String> ingredients) {
         Recipe existingRecipe = recipeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recipe not found with id " + id));
+        if (updatedRecipe.getName() != null) {
+            existingRecipe.setName(updatedRecipe.getName());
+        }
+        if (updatedRecipe.getDescription() != null) {
+            existingRecipe.setDescription(updatedRecipe.getDescription());
+        }
+        if (updatedRecipe.getImageUrl() != null) {
+            existingRecipe.setImageUrl(updatedRecipe.getImageUrl());
+        }
+        if (updatedRecipe.getCategory() != null) {
+            existingRecipe.setCategory(updatedRecipe.getCategory());
+        }
+        if (updatedRecipe.getCalories() != null) {
+            existingRecipe.setCalories(updatedRecipe.getCalories());
+        }
+        if (updatedRecipe.getCooking_time() != null) {
+            existingRecipe.setCooking_time(updatedRecipe.getCooking_time());
+        }
         existingRecipe.setName(updatedRecipe.getName());
         existingRecipe.setDescription(updatedRecipe.getDescription());
 
@@ -98,16 +117,12 @@ public class RecipeService {
         recipeRepository.delete(recipe);
     }
 
-    public List<RecipeDTO> getRecipesByUserId(Long userId) {
-        List<Recipe> recipes = recipeRepository.findRecipesByUserId(userId);
+    public List<Recipe> getRecipesByUserId(Long userId) {
         log.info("Recipes fetching by user id");
-        return recipes.stream()
-                .map(recipe -> RecipeDTO.builder()
-                        .id(recipe.getId())
-                        .name(recipe.getName())
-                        .description((recipe.getDescription()))
-                        .user(recipe.getUser())
-                        .build())
-                .toList();
+        return recipeRepository.findRecipesByUserId(userId);
+    }
+
+    public List<RecipeCategory> getAllCategories() {
+        return List.of(RecipeCategory.values());
     }
 }
