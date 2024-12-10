@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor  // JPA requires a no-argument constructor
-@AllArgsConstructor // This creates an all-argument constructor for Lombok's builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Recipe {
     @Id
@@ -48,4 +50,12 @@ public class Recipe {
 
     @Column(name = "cooking_time", nullable = false)
     private Long cooking_time;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<RecipeIngredient> ingredients = new ArrayList<>();
+
+    public void updateIngredients(List<RecipeIngredient> newIngredients) {
+        ingredients.clear();
+        ingredients.addAll(newIngredients);
+    }
 }

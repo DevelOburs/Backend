@@ -3,7 +3,7 @@ package com.fridgify.recipe_api.model;
 public enum IngredientCategory {
     PRODUCE,
     DAIRY_AND_EGGS,
-    MEATS_AND_PROTEINS,
+    MEAT_AND_PROTEINS,
     BAKING_AND_PANTRY,
     CANNED_AND_PRESERVED_FOODS,
     BEVERAGES_AND_SWEETENERS,

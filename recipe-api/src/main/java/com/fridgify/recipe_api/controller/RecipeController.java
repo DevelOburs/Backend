@@ -3,6 +3,7 @@ package com.fridgify.recipe_api.controller;
 import com.fridgify.recipe_api.dto.RecipeDTO;
 import com.fridgify.recipe_api.model.Recipe;
 import com.fridgify.recipe_api.model.RecipeCategory;
+
 import com.fridgify.recipe_api.service.RecipeService;
 import com.fridgify.recipe_api.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,6 @@ public class RecipeController {
     public ResponseEntity<List<RecipeDTO>> getAllRecipes(
             @RequestParam(value = "limit", required = false) Integer limit,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
-
         // Fetch recipes with pagination
         List<Recipe> recipes = recipeService.getAllRecipes(limit, pageNumber);
 
@@ -51,7 +51,7 @@ public class RecipeController {
         if(recipeDTO.getUserId() == null) {recipeDTO.setUserId((long)3);}
         Recipe newRecipe = recipeDTO.toModel(); // Convert RecipeDTO to Recipe
         newRecipe.setUser(userService.getUserById(recipeDTO.getUserId()));
-        Recipe savedRecipe = recipeService.createRecipe(newRecipe);
+        Recipe savedRecipe = recipeService.createRecipe(newRecipe, recipeDTO.getIngredients());
 
         RecipeDTO responseDTO = RecipeDTO.toResponse(savedRecipe);
 
@@ -69,7 +69,7 @@ public class RecipeController {
                 .calories(recipeDTO.getCalories())
                 .category(recipeDTO.getCategory())
                 .build();
-        Recipe savedRecipe = recipeService.updateRecipe(id, updatedRecipe);
+        Recipe savedRecipe = recipeService.updateRecipe(id, updatedRecipe, recipeDTO.getIngredients());
 
         RecipeDTO responseDTO = RecipeDTO.toResponse(savedRecipe);
 
@@ -81,6 +81,7 @@ public class RecipeController {
         recipeService.deleteRecipe(id);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/getRecipes/{userId}")
     public ResponseEntity<List<RecipeDTO>> getRecipesByUserId(@PathVariable Long userId) {
         List<Recipe> recipes = recipeService.getRecipesByUserId(userId);
@@ -96,7 +97,6 @@ public class RecipeController {
     @GetMapping("/categories")
     public ResponseEntity<List<RecipeCategory>> getAllRecipeCategories() {
         List<RecipeCategory> categories = recipeService.getAllCategories();
-
         return ResponseEntity.ok(categories);
     }
 

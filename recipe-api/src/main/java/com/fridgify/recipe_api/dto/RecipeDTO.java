@@ -2,11 +2,17 @@ package com.fridgify.recipe_api.dto;
 
 import com.fridgify.recipe_api.model.Recipe;
 import com.fridgify.recipe_api.model.RecipeCategory;
+import com.fridgify.recipe_api.model.RecipeIngredient;
+import com.fridgify.recipe_api.model.Ingredient;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 
 @Data
@@ -26,6 +32,7 @@ public class RecipeDTO {
     private Long likeCount;
     private Long commentCount;
     private Long saveCount;
+    private List<String> ingredients;
     private String imageUrl;
     private RecipeCategory category;
     private Long calories;
@@ -44,6 +51,7 @@ public class RecipeDTO {
                 .category(this.category)
                 .calories(this.calories)
                 .cooking_time(this.cooking_time)
+                .ingredients(new ArrayList<>())
                 .build();
     }
 
@@ -64,6 +72,10 @@ public class RecipeDTO {
                 .category(recipe.getCategory())
                 .calories(recipe.getCalories())
                 .cooking_time(recipe.getCooking_time())
+                .ingredients(recipe.getIngredients().stream()
+                        .map(RecipeIngredient::getIngredient)
+                        .map(Ingredient::getName)
+                        .collect(Collectors.toList()))
                 .build();
     }
 }
