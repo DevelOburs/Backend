@@ -71,7 +71,7 @@ public class RecipeController {
                 .name(recipeDTO.getName())
                 .description(recipeDTO.getDescription())
                 .imageUrl(recipeDTO.getImageUrl())
-                .cooking_time(recipeDTO.getCooking_time())
+                .cookingTime(recipeDTO.getCookingTime())
                 .calories(recipeDTO.getCalories())
                 .category(recipeDTO.getCategory())
                 .build();

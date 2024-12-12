@@ -91,8 +91,8 @@ public class RecipeService {
         if (updatedRecipe.getCalories() != null) {
             existingRecipe.setCalories(updatedRecipe.getCalories());
         }
-        if (updatedRecipe.getCooking_time() != null) {
-            existingRecipe.setCooking_time(updatedRecipe.getCooking_time());
+        if (updatedRecipe.getCookingTime() != null) {
+            existingRecipe.setCookingTime(updatedRecipe.getCookingTime());
         }
 
         if (ingredients != null) {
