@@ -27,10 +27,16 @@ public class RecipeController {
     @GetMapping
     public ResponseEntity<List<RecipeDTO>> getAllRecipes(
             @RequestParam(value = "limit", required = false) Integer limit,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "minCookingTime", required = false) Integer minCookingTime,
+            @RequestParam(value = "maxCookingTime", required = false) Integer maxCookingTime,
+            @RequestParam(value = "minCalories", required = false) Integer minCalories,
+            @RequestParam(value = "maxCalories", required = false) Integer maxCalories) {
         // Fetch recipes with pagination
-        List<Recipe> recipes = recipeService.getAllRecipes(limit, pageNumber);
-
+        List<Recipe> recipes = recipeService.getAllRecipes(
+                limit, pageNumber, category, minCookingTime, maxCookingTime, minCalories, maxCalories
+        );
         // Convert Recipe to RecipeDTO
         List<RecipeDTO> recipeDTOs = recipes.stream()
                 .map(RecipeDTO::toResponse)
