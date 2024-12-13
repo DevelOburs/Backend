@@ -28,7 +28,7 @@ public class RecipeController {
     public ResponseEntity<List<RecipeDTO>> getAllRecipes(
             @RequestParam(value = "limit", required = false) Integer limit,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "category", required = false) RecipeCategory category,
             @RequestParam(value = "minCookingTime", required = false) Integer minCookingTime,
             @RequestParam(value = "maxCookingTime", required = false) Integer maxCookingTime,
             @RequestParam(value = "minCalories", required = false) Integer minCalories,

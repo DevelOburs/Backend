@@ -35,7 +35,7 @@ public class RecipeService {
         this.recipeIngredientRepository = recipeIngredientRepository;
     }
 
-    public List<Recipe> getAllRecipes(Integer limit, Integer pageNumber, String category,
+    public List<Recipe> getAllRecipes(Integer limit, Integer pageNumber, RecipeCategory category,
                                       Integer minCookingTime, Integer maxCookingTime,
                                       Integer minCalories, Integer maxCalories) {
         Pageable pageable = (limit != null && pageNumber != null) ? PageRequest.of(pageNumber, limit) : Pageable.unpaged();
@@ -129,11 +129,11 @@ public class RecipeService {
         return List.of(RecipeCategory.values());
     }
 
-    public static Specification<Recipe> filterByCriteria(String category, Integer minCookingTime, Integer maxCookingTime, Integer minCalories, Integer maxCalories) {
+    public static Specification<Recipe> filterByCriteria(RecipeCategory category, Integer minCookingTime, Integer maxCookingTime, Integer minCalories, Integer maxCalories) {
         return (root, query, criteriaBuilder) -> {
             List<jakarta.persistence.criteria.Predicate> predicates = new ArrayList<>();
 
-            if (category != null && !category.isEmpty()) {
+            if (category != null) {
                 predicates.add(criteriaBuilder.equal(root.get("category"), category));
             }
             if (minCookingTime != null) {
