@@ -49,7 +49,7 @@ public class Recipe {
     private Long calories;
 
     @Column(name = "cooking_time", nullable = false)
-    private Long cooking_time;
+    private Long cookingTime;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<RecipeIngredient> ingredients = new ArrayList<>();

@@ -36,7 +36,7 @@ public class RecipeDTO {
     private String imageUrl;
     private RecipeCategory category;
     private Long calories;
-    private Long cooking_time;
+    private Long cookingTime;
 
 
     public Recipe toModel() {
@@ -50,7 +50,7 @@ public class RecipeDTO {
                 .imageUrl(this.imageUrl)
                 .category(this.category)
                 .calories(this.calories)
-                .cooking_time(this.cooking_time)
+                .cookingTime(this.cookingTime)
                 .ingredients(new ArrayList<>())
                 .build();
     }
@@ -71,7 +71,7 @@ public class RecipeDTO {
                 .userLastName(recipe.getUser().getLastName())
                 .category(recipe.getCategory())
                 .calories(recipe.getCalories())
-                .cooking_time(recipe.getCooking_time())
+                .cookingTime(recipe.getCookingTime())
                 .ingredients(recipe.getIngredients().stream()
                         .map(RecipeIngredient::getIngredient)
                         .map(Ingredient::getName)
