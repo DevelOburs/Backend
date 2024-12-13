@@ -1,11 +1,13 @@
 package com.fridgify.recipe_api.model;
 
+import com.fridgify.recipe_api.dto.RecipeDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -57,5 +59,29 @@ public class Recipe {
     public void updateIngredients(List<RecipeIngredient> newIngredients) {
         ingredients.clear();
         ingredients.addAll(newIngredients);
+    }
+
+    public RecipeDTO toResponse() {
+        return RecipeDTO.builder()
+                .id(this.getId())
+                .name(this.getName())
+                .description(this.getDescription())
+                .likeCount(this.getLikeCount())
+                .commentCount(this.getCommentCount())
+                .saveCount(this.getSaveCount())
+                .imageUrl(this.getImageUrl())
+                .createdAt(this.getCreatedAt())
+                .userId(this.getUser().getId())
+                .userUsername(this.getUser().getUsername())
+                .userFirstName(this.getUser().getFirstName())
+                .userLastName(this.getUser().getLastName())
+                .category(this.getCategory())
+                .calories(this.getCalories())
+                .cookingTime(this.getCookingTime())
+                .ingredients(this.getIngredients().stream()
+                        .map(RecipeIngredient::getIngredient)
+                        .map(Ingredient::getName)
+                        .collect(Collectors.toList()))
+                .build();
     }
 }

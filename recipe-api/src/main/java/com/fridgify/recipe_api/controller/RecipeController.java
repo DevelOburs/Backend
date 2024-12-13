@@ -6,12 +6,16 @@ import com.fridgify.recipe_api.model.RecipeCategory;
 
 import com.fridgify.recipe_api.service.RecipeService;
 import com.fridgify.recipe_api.service.UserService;
+
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Slf4j
 @RestController
 @RequestMapping("/recipe-api")
 public class RecipeController {
@@ -89,21 +93,68 @@ public class RecipeController {
     }
 
     @GetMapping("/getRecipes/{userId}")
-    public ResponseEntity<List<RecipeDTO>> getRecipesByUserId(@PathVariable Long userId) {
-        List<Recipe> recipes = recipeService.getRecipesByUserId(userId);
-        if (recipes.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
+    public ResponseEntity<?> getRecipesByUserId(@PathVariable Long userId,
+                                                              @RequestParam(value = "limit", required = false) Integer limit,
+                                                              @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+        try {
+            if (userId == null || userId <= 0) {
+                log.error("Invalid user ID: {}", userId);
+                return ResponseEntity.badRequest().body("Invalid user ID");
+            }
+            List<Recipe> recipes = recipeService.getRecipesByUserId(userId, limit, pageNumber);
 
-        return ResponseEntity.ok(recipes.stream()
-                .map(RecipeDTO::toResponse)
-                .collect(Collectors.toList()));
+            if (recipes.isEmpty()) {
+                log.error("No recipes found for user ID: {}", userId);
+                return ResponseEntity.noContent().build();
+            }
+            List<RecipeDTO> recipeDTOs = recipes.stream()
+                    .map(RecipeDTO::toResponse)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(recipeDTOs);
+
+        } catch (RuntimeException e) {
+            log.error("Error occurred while fetching recipes for user ID {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error occurred for user ID {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+        }
     }
 
     @GetMapping("/categories")
     public ResponseEntity<List<RecipeCategory>> getAllRecipeCategories() {
         List<RecipeCategory> categories = recipeService.getAllCategories();
         return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping("/userRecipeCount")
+    public ResponseEntity<?> getUserRecipeCount(@RequestParam Long userId) {
+        try {
+            // Validate userId
+            if (userId == null || userId <= 0) {
+                log.info("Invalid user ID: {}", userId);
+                return ResponseEntity.badRequest().body("Invalid user ID");
+            }
+
+            // Check if user exists
+            if (!userService.userExists(userId)) {
+                log.info("User not found for ID: {}", userId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+
+            // Fetch recipe count
+            long recipeCount = recipeService.getCountRecipesOfUser(userId)
+                    .orElseThrow(() -> new RuntimeException("No recipes found for user ID: " + userId));
+
+            return ResponseEntity.ok(recipeCount);
+        } catch (RuntimeException e) {
+            log.error("Error occurred while fetching recipe count for user ID {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error occurred for user ID {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+        }
     }
 
 }

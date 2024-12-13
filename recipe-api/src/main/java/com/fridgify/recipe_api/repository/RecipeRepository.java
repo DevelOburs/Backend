@@ -2,6 +2,7 @@ package com.fridgify.recipe_api.repository;
 
 import com.fridgify.recipe_api.model.Recipe;
 import com.fridgify.recipe_api.model.RecipeCategory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -27,6 +28,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long>, JpaSpecif
 
     List<Recipe> findRecipesByUserId(Long userId);
 
+    Page<Recipe> findRecipesByUserId(Long userId, Pageable pageable);
+
     @Modifying
     @Query("UPDATE Recipe r SET r.likeCount = :likeCount WHERE r.id = :recipeId")
     void updateLikeCount(@Param("recipeId") Long recipeId, @Param("likeCount") Long likeCount);
@@ -40,4 +43,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long>, JpaSpecif
     void updateSaveCount(@Param("recipeId") Long recipeId, @Param("saveCount") Long saveCount);
 
     List<Recipe> findRecipesByCategory(RecipeCategory category);
+
+    Optional<Long> countRecipesByUserId(Long userId);
 }
