@@ -93,15 +93,33 @@ public class RecipeController {
     }
 
     @GetMapping("/getRecipes/{userId}")
-    public ResponseEntity<List<RecipeDTO>> getRecipesByUserId(@PathVariable Long userId) {
-        List<Recipe> recipes = recipeService.getRecipesByUserId(userId);
-        if (recipes.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
+    public ResponseEntity<?> getRecipesByUserId(@PathVariable Long userId,
+                                                              @RequestParam(value = "limit", required = false) Integer limit,
+                                                              @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+        try {
+            if (userId == null || userId <= 0) {
+                log.error("Invalid user ID: {}", userId);
+                return ResponseEntity.badRequest().body("Invalid user ID");
+            }
+            List<Recipe> recipes = recipeService.getRecipesByUserId(userId, limit, pageNumber);
 
-        return ResponseEntity.ok(recipes.stream()
-                .map(RecipeDTO::toResponse)
-                .collect(Collectors.toList()));
+            if (recipes.isEmpty()) {
+                log.error("No recipes found for user ID: {}", userId);
+                return ResponseEntity.noContent().build();
+            }
+            List<RecipeDTO> recipeDTOs = recipes.stream()
+                    .map(RecipeDTO::toResponse)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(recipeDTOs);
+
+        } catch (RuntimeException e) {
+            log.error("Error occurred while fetching recipes for user ID {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error occurred for user ID {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+        }
     }
 
     @GetMapping("/categories")
