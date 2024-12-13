@@ -40,4 +40,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long>, JpaSpecif
     void updateSaveCount(@Param("recipeId") Long recipeId, @Param("saveCount") Long saveCount);
 
     List<Recipe> findRecipesByCategory(RecipeCategory category);
+
+    Optional<Long> countRecipesByUserId(Long userId);
 }

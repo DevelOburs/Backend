@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -151,5 +152,9 @@ public class RecipeService {
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    public Optional<Long> getCountRecipesOfUser(Long userId) {
+        return recipeRepository.countRecipesByUserId(userId);
     }
 }
