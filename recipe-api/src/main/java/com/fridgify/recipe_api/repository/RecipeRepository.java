@@ -1,8 +1,10 @@
 package com.fridgify.recipe_api.repository;
 
 import com.fridgify.recipe_api.model.Recipe;
+import com.fridgify.recipe_api.model.RecipeCategory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RecipeRepository extends JpaRepository<Recipe, Long> {
+public interface RecipeRepository extends JpaRepository<Recipe, Long>, JpaSpecificationExecutor<Recipe> {
     @Override
     List<Recipe> findAll();
 
@@ -36,4 +38,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Modifying
     @Query("UPDATE Recipe r SET r.saveCount = :saveCount WHERE r.id = :recipeId")
     void updateSaveCount(@Param("recipeId") Long recipeId, @Param("saveCount") Long saveCount);
+
+    List<Recipe> findRecipesByCategory(RecipeCategory category);
 }

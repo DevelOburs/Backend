@@ -8,12 +8,16 @@ import com.fridgify.recipe_api.repository.IngredientRepository;
 import com.fridgify.recipe_api.repository.RecipeIngredientRepository;
 import com.fridgify.recipe_api.model.RecipeCategory;
 import com.fridgify.recipe_api.repository.RecipeRepository;
+import jakarta.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,13 +35,16 @@ public class RecipeService {
         this.recipeIngredientRepository = recipeIngredientRepository;
     }
 
-    public List<Recipe> getAllRecipes(Integer limit, Integer pageNumber) {
-        if (limit != null && pageNumber != null) {
-            Pageable pageable = PageRequest.of(pageNumber, limit);
-            return recipeRepository.findAll(pageable).getContent();
-        } else {
-            return recipeRepository.findAll();
-        }
+    public List<Recipe> getAllRecipes(Integer limit, Integer pageNumber, RecipeCategory category,
+                                      Integer minCookingTime, Integer maxCookingTime,
+                                      Integer minCalories, Integer maxCalories) {
+        Pageable pageable = (limit != null && pageNumber != null) ? PageRequest.of(pageNumber, limit) : Pageable.unpaged();
+
+        Specification<Recipe> spec = filterByCriteria(category, minCookingTime, maxCookingTime, minCalories, maxCalories);
+
+        Page<Recipe> recipePage = recipeRepository.findAll(spec, pageable);
+
+        return recipePage.getContent();
     }
 
     public Recipe getRecipeById(Long id) {
@@ -84,8 +91,8 @@ public class RecipeService {
         if (updatedRecipe.getCalories() != null) {
             existingRecipe.setCalories(updatedRecipe.getCalories());
         }
-        if (updatedRecipe.getCooking_time() != null) {
-            existingRecipe.setCooking_time(updatedRecipe.getCooking_time());
+        if (updatedRecipe.getCookingTime() != null) {
+            existingRecipe.setCookingTime(updatedRecipe.getCookingTime());
         }
 
         if (ingredients != null) {
@@ -120,5 +127,29 @@ public class RecipeService {
 
     public List<RecipeCategory> getAllCategories() {
         return List.of(RecipeCategory.values());
+    }
+
+    public static Specification<Recipe> filterByCriteria(RecipeCategory category, Integer minCookingTime, Integer maxCookingTime, Integer minCalories, Integer maxCalories) {
+        return (root, query, criteriaBuilder) -> {
+            List<jakarta.persistence.criteria.Predicate> predicates = new ArrayList<>();
+
+            if (category != null) {
+                predicates.add(criteriaBuilder.equal(root.get("category"), category));
+            }
+            if (minCookingTime != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("cookingTime"), minCookingTime));
+            }
+            if (maxCookingTime != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("cookingTime"), maxCookingTime));
+            }
+            if (minCalories != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("calories"), minCalories));
+            }
+            if (maxCalories != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("calories"), maxCalories));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
     }
 }
