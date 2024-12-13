@@ -9,4 +9,6 @@ public interface RecipeLikeRepository extends JpaRepository<RecipeLike, RecipeLi
     Optional<RecipeLike> findByIdRecipeIdAndIdUserId(Long recipeId, Long userId);
 
     long countByIdRecipeId(Long recipeId);
+
+    long countByIdUserId(Long userId);
 }
