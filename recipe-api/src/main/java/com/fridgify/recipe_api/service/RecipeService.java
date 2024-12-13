@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -120,9 +121,14 @@ public class RecipeService {
         recipeRepository.delete(recipe);
     }
 
-    public List<Recipe> getRecipesByUserId(Long userId) {
-        log.info("Recipes fetching by user id");
-        return recipeRepository.findRecipesByUserId(userId);
+    public List<Recipe> getRecipesByUserId(Long userId, Integer limit, Integer pageNumber) {
+
+        Pageable pageable = (limit != null && pageNumber != null) ? PageRequest.of(pageNumber, limit) : Pageable.unpaged();
+
+        Page<Recipe> recipePage = recipeRepository.findRecipesByUserId(userId, pageable);
+
+                log.info("Recipes fetching by user id");
+        return recipePage.getContent();
     }
 
     public List<RecipeCategory> getAllCategories() {
@@ -151,5 +157,9 @@ public class RecipeService {
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    public Optional<Long> getCountRecipesOfUser(Long userId) {
+        return recipeRepository.countRecipesByUserId(userId);
     }
 }
