@@ -121,9 +121,14 @@ public class RecipeService {
         recipeRepository.delete(recipe);
     }
 
-    public List<Recipe> getRecipesByUserId(Long userId) {
-        log.info("Recipes fetching by user id");
-        return recipeRepository.findRecipesByUserId(userId);
+    public List<Recipe> getRecipesByUserId(Long userId, Integer limit, Integer pageNumber) {
+
+        Pageable pageable = (limit != null && pageNumber != null) ? PageRequest.of(pageNumber, limit) : Pageable.unpaged();
+
+        Page<Recipe> recipePage = recipeRepository.findRecipesByUserId(userId, pageable);
+
+                log.info("Recipes fetching by user id");
+        return recipePage.getContent();
     }
 
     public List<RecipeCategory> getAllCategories() {
