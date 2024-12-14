@@ -1,22 +1,21 @@
 package com.fridgify.recipe_api.service;
 
-import com.fridgify.recipe_api.dto.IngredientDTO;
 import com.fridgify.recipe_api.model.Ingredient;
 import com.fridgify.recipe_api.model.IngredientCategory;
 import com.fridgify.recipe_api.model.User;
 import com.fridgify.recipe_api.repository.IngredientRepository;
 import com.fridgify.recipe_api.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class FridgeService {
 
@@ -28,171 +27,107 @@ public class FridgeService {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public List<IngredientDTO> getAllIngredientsInFridge(Long userId,
-                                               String nameFilter,
-                                               List<IngredientCategory> categoryFilters) {
+    public List<Ingredient> getInFridge(Long userId, Integer limit, Integer pageNumber,
+                                        IngredientCategory category, String nameFilter) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Pageable pageable = (limit != null && pageNumber != null)
+                ? PageRequest.of(pageNumber, limit)
+                : Pageable.unpaged();
 
-        return user.getFridgeIngredients().stream()
-                .filter(ingredient -> nameFilter == null || nameFilter.isEmpty()
-                        || ingredient.getName().toLowerCase().contains(nameFilter.toLowerCase()))
-
-                .filter(ingredient -> categoryFilters == null || categoryFilters.isEmpty() ||
-                        categoryFilters.contains(ingredient.getCategory()))
-                .map(ingredient -> IngredientDTO.builder()
-                        .id(ingredient.getId())
-                        .name(ingredient.getName())
-                        .category(ingredient.getCategory())
-                        .imageUrl(ingredient.getImageUrl())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-
-    public Page<IngredientDTO> getAllIngredientsInFridge(Long userId,
-                                                         String nameFilter,
-                                                         List<IngredientCategory> categoryFilters,
-                                                         int page,
-                                                         int size) {
-
-        List<IngredientDTO> filteredIngredients = getAllIngredientsInFridge(userId, nameFilter, categoryFilters);
-
-        int start = Math.min(page * size, filteredIngredients.size());
-        int end = Math.min(start + size, filteredIngredients.size());
-
-        List<IngredientDTO> paginatedIngredients = filteredIngredients.subList(start, end);
-
-        return new PageImpl<>(paginatedIngredients, PageRequest.of(page, size), filteredIngredients.size());
-    }
-
-
-    public List<IngredientDTO> getIngredientsNotInFridge(Long userId,
-                                                         String nameFilter,
-                                                         List<IngredientCategory> categoryFilters) {
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByIdWithFridgeIngredients(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+        List<Long> fridgeIngredientIds = user.getFridgeIngredients().stream()
+                .map(Ingredient::getId)
+                .toList();
+
+        Specification<Ingredient> spec = Specification.where(inFridge(fridgeIngredientIds))
+                .and(byCategoryIfProvided(category))
+                .and(byNameFilterIfProvided(nameFilter));
+
+        return ingredientRepository.findAll(spec, pageable).getContent();
+    }
+
+    public List<Ingredient> getNotInFridge(Long userId, Integer limit, Integer pageNumber,
+                                           IngredientCategory category, String nameFilter) {
+
+        Pageable pageable = (limit != null && pageNumber != null)
+                ? PageRequest.of(pageNumber, limit)
+                : Pageable.unpaged();
+
+        User user = userRepository.findByIdWithFridgeIngredients(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+        List<Long> fridgeIngredientIds = user.getFridgeIngredients().stream()
+                .map(Ingredient::getId)
+                .toList();
+
+        Specification<Ingredient> spec = Specification.where(notInFridge(fridgeIngredientIds))
+                .and(byCategoryIfProvided(category))
+                .and(byNameFilterIfProvided(nameFilter));
+
+        return ingredientRepository.findAll(spec, pageable).getContent();
+    }
+
+
+    @Transactional
+    public List<Ingredient> addToFridge(Long userId, List<Long> ingredientIds) {
+        User user = userRepository.findByIdWithFridgeIngredients(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+        List<Ingredient> ingredientsToAdd = ingredientRepository.findByIdIn(ingredientIds);
+
+        if (ingredientsToAdd.isEmpty()) {
+            throw new IllegalArgumentException("No valid ingredients found with the provided IDs.");
+        }
 
         List<Ingredient> fridgeIngredients = user.getFridgeIngredients();
+        ingredientsToAdd.forEach(ingredient -> {
+            if (!fridgeIngredients.contains(ingredient)) {
+                fridgeIngredients.add(ingredient);
+            }
+        });
 
-        List<Ingredient> allIngredients = ingredientRepository.findAll();
-
-        List<Ingredient> notInFridgeIngredients = allIngredients.stream()
-                .filter(ingredient -> !fridgeIngredients.contains(ingredient))
-                .collect(Collectors.toList());
-
-        if (nameFilter != null && !nameFilter.isEmpty()) {
-            notInFridgeIngredients = notInFridgeIngredients.stream()
-                    .filter(ingredient -> ingredient.getName().toLowerCase().contains(nameFilter.toLowerCase()))
-                    .collect(Collectors.toList());
-        }
-
-        if (categoryFilters != null && !categoryFilters.isEmpty()) {
-            notInFridgeIngredients = notInFridgeIngredients.stream()
-                    .filter(ingredient -> categoryFilters.contains(ingredient.getCategory()))
-                    .collect(Collectors.toList());
-        }
-
-        return notInFridgeIngredients.stream()
-                .map(ingredient -> new IngredientDTO(
-                        ingredient.getId(),
-                        ingredient.getName(),
-                        ingredient.getCategory(),
-                        ingredient.getImageUrl()
-                ))
-                .toList();
-    }
-
-
-    public Page<IngredientDTO> getIngredientsNotInFridge(Long userId,
-                                                         String nameFilter,
-                                                         List<IngredientCategory> categoryFilters,
-                                                         int page,
-                                                         int size) {
-
-        List<IngredientDTO> notInFridgeIngredients = getIngredientsNotInFridge(userId, nameFilter, categoryFilters);
-
-        // Calculate start and end indices for pagination
-        int start = Math.min(page * size, notInFridgeIngredients.size());
-        int end = Math.min(start + size, notInFridgeIngredients.size());
-
-        List<IngredientDTO> paginatedIngredients = notInFridgeIngredients.subList(start, end).stream()
-                .map(ingredient -> new IngredientDTO(
-                        ingredient.getId(),
-                        ingredient.getName(),
-                        ingredient.getCategory(),
-                        ingredient.getImageUrl()
-                ))
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(paginatedIngredients, PageRequest.of(page, size), notInFridgeIngredients.size());
-    }
-
-
-    public List<IngredientDTO> addIngredientsToFridge(Long userId, List<Long> ingredientIds) {
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
-
-        Set<Long> uniqueIngredientIds = new HashSet<>(ingredientIds);
-
-        List<Ingredient> ingredientsToAdd = ingredientRepository.findAllById(uniqueIngredientIds);
-
-        if (ingredientsToAdd.size() != uniqueIngredientIds.size()) {
-            Set<Long> missingIds = uniqueIngredientIds.stream()
-                    .filter(id -> ingredientsToAdd.stream().noneMatch(ingredient -> ingredient.getId() == id))
-                    .collect(Collectors.toSet());
-            throw new EntityNotFoundException("Ingredients not found with ids: " + missingIds);
-        }
-
-        Set<Ingredient> existingIngredients = new HashSet<>(user.getFridgeIngredients());
-        ingredientsToAdd.stream()
-                .filter(ingredient -> !existingIngredients.contains(ingredient))
-                .forEach(user.getFridgeIngredients()::add);
-
+        user.setFridgeIngredients(fridgeIngredients);
         userRepository.save(user);
 
-        return user.getFridgeIngredients().stream()
-                .map(ingredient -> new IngredientDTO(
-                        ingredient.getId(),
-                        ingredient.getName(),
-                        ingredient.getCategory(),
-                        ingredient.getImageUrl()
-                ))
-                .toList();
+        return fridgeIngredients;
     }
 
-    public List<IngredientDTO> removeIngredientsFromFridge(Long userId, List<Long> ingredientIds) {
-
-        User user = userRepository.findById(userId)
+    @Transactional
+    public List<Ingredient> removeFromFridge(Long userId, List<Long> ingredientIds) {
+        User user = userRepository.findByIdWithFridgeIngredients(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
 
-        Set<Long> uniqueIngredientIds = new HashSet<>(ingredientIds);
+        List<Ingredient> ingredientsToRemove = ingredientRepository.findByIdIn(ingredientIds);
 
-        List<Ingredient> ingredientsToRemove = ingredientRepository.findAllById(uniqueIngredientIds);
-
-        if (ingredientsToRemove.size() != uniqueIngredientIds.size()) {
-            Set<Long> missingIds = uniqueIngredientIds.stream()
-                    .filter(id -> ingredientsToRemove.stream().noneMatch(ingredient -> ingredient.getId() == id))
-                    .collect(Collectors.toSet());
-            throw new EntityNotFoundException("Ingredients not found with ids: " + missingIds);
+        if (ingredientsToRemove.isEmpty()) {
+            throw new IllegalArgumentException("No valid ingredients found with the provided IDs.");
         }
 
-        Set<Ingredient> existingIngredients = new HashSet<>(user.getFridgeIngredients());
-        ingredientsToRemove.stream()
-                .filter(existingIngredients::contains)
-                .forEach(user.getFridgeIngredients()::remove);
-
+        user.getFridgeIngredients().removeAll(ingredientsToRemove);
         userRepository.save(user);
 
-        return user.getFridgeIngredients().stream()
-                .map(ingredient -> new IngredientDTO(
-                        ingredient.getId(),
-                        ingredient.getName(),
-                        ingredient.getCategory(),
-                        ingredient.getImageUrl()
-                ))
-                .toList();
+        return user.getFridgeIngredients();
+    }
+
+    private Specification<Ingredient> inFridge(List<Long> fridgeIngredientIds) {
+        return (root, query, cb) -> root.get("id").in(fridgeIngredientIds);
+    }
+
+    private Specification<Ingredient> notInFridge(List<Long> fridgeIngredientIds) {
+        return (root, query, cb) -> cb.not(root.get("id").in(fridgeIngredientIds));
+    }
+
+    private Specification<Ingredient> byCategoryIfProvided(IngredientCategory category) {
+        return (root, query, cb) -> category != null
+                ? cb.equal(root.get("category"), category)
+                : cb.conjunction();
+    }
+
+    private Specification<Ingredient> byNameFilterIfProvided(String nameFilter) {
+        return (root, query, cb) -> nameFilter != null && !nameFilter.isEmpty()
+                ? cb.like(cb.lower(root.get("name")), "%" + nameFilter.toLowerCase() + "%")
+                : cb.conjunction();
     }
 }

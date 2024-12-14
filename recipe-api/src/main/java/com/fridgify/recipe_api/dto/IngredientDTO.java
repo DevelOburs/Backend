@@ -34,4 +34,13 @@ public class IngredientDTO {
                 .imageUrl(this.imageUrl)
                 .build();
     }
+
+    public static IngredientDTO toResponse(Ingredient ingredient) {
+        return builder()
+                .id(ingredient.getId())
+                .name(ingredient.getName())
+                .category(ingredient.getCategory())
+                .imageUrl(ingredient.getImageUrl())
+                .build();
+    }
 }
