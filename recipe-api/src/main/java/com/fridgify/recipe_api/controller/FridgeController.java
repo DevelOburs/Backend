@@ -2,15 +2,16 @@ package com.fridgify.recipe_api.controller;
 
 import com.fridgify.recipe_api.dto.IngredientDTO;
 import com.fridgify.recipe_api.dto.IngredientIdsDTO;
+import com.fridgify.recipe_api.model.Ingredient;
 import com.fridgify.recipe_api.model.IngredientCategory;
 import com.fridgify.recipe_api.service.FridgeService;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/fridge-api")
@@ -22,7 +23,6 @@ public class FridgeController {
         this.fridgeService = fridgeService;
     }
 
-    // gets all ingredient categories if need be
     @GetMapping("/categories")
     public ResponseEntity<List<String>> getIngredientCategories() {
         return new ResponseEntity<>(
@@ -34,55 +34,66 @@ public class FridgeController {
     }
 
     @GetMapping("{userId}/inFridge")
-    public ResponseEntity<List<IngredientDTO>> getAllIngredientsInFridge(@PathVariable Long userId,
-                                                               @RequestParam(required = false) String nameFilter,
-                                                               @RequestParam(required = false) List<IngredientCategory> categoryFilters) {
-        return new ResponseEntity<>(fridgeService.getAllIngredientsInFridge(userId, nameFilter, categoryFilters), HttpStatus.OK);
-    }
+    public ResponseEntity<List<IngredientDTO>> getInFridge(
+            @PathVariable(value = "userId") Long userId,
+            @RequestParam(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "category", required = false) IngredientCategory category,
+            @RequestParam(value = "nameFilter", required = false) String nameFilter
+    ) {
 
-    @GetMapping("{userId}/inFridgePaginated")
-    public ResponseEntity<Page<IngredientDTO>> getAllIngredientsInFridgePaginated(
-            @PathVariable Long userId,
-            @RequestParam(required = false) String nameFilter,
-            @RequestParam(required = false) List<IngredientCategory> categoryFilters,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return new ResponseEntity<>(fridgeService.getAllIngredientsInFridge(userId, nameFilter, categoryFilters, page, size), HttpStatus.OK);
-    }
+        List<Ingredient> ingredients = fridgeService.getInFridge(userId, limit, pageNumber, category, nameFilter);
 
-    @GetMapping("{userId}/inFridge/{ingredientCategory}")
-    public ResponseEntity<List<IngredientDTO>> getAllIngredientsInFridgeByCategory(@PathVariable Long userId,
-                                                                      @PathVariable IngredientCategory ingredientCategory) {
-        return new ResponseEntity<>(fridgeService.getAllIngredientsInFridge(userId, null, List.of(ingredientCategory)), HttpStatus.OK);
+        List<IngredientDTO> ingredientDTOs = ingredients.stream()
+                .map(IngredientDTO::toResponse)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ingredientDTOs);
     }
 
     @GetMapping("{userId}/notInFridge")
-    public ResponseEntity<List<IngredientDTO>> getIngredientsNotInFridge(@PathVariable Long userId,
-                                                                         @RequestParam(required = false) String nameFilter,
-                                                                         @RequestParam(required = false) List<IngredientCategory> categoryFilters) {
-        return new ResponseEntity<>(fridgeService.getIngredientsNotInFridge(userId, nameFilter, categoryFilters), HttpStatus.OK);
-    }
+    public ResponseEntity<List<IngredientDTO>> getNotInFridge(@PathVariable Long userId,
+            @RequestParam(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "category", required = false) IngredientCategory category,
+            @RequestParam(value = "nameFilter", required = false) String nameFilter
+    ) {
 
-    @GetMapping("{userId}/notInFridgePaginated")
-    public ResponseEntity<Page<IngredientDTO>> getIngredientsNotInFridge(@PathVariable Long userId,
-                                                                         @RequestParam(required = false) String nameFilter,
-                                                                         @RequestParam(required = false) List<IngredientCategory> categoryFilters,
-                                                                         @RequestParam(defaultValue = "0") int page,
-                                                                         @RequestParam(defaultValue = "10") int size) {
-        return new ResponseEntity<>(fridgeService.getIngredientsNotInFridge(userId, nameFilter, categoryFilters, page, size), HttpStatus.OK);
+        List<Ingredient> ingredients = fridgeService.getNotInFridge(userId, limit, pageNumber, category, nameFilter);
+
+        List<IngredientDTO> ingredientDTOs = ingredients.stream()
+                .map(IngredientDTO::toResponse)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ingredientDTOs);
     }
 
     @PutMapping("{userId}/add")
-    public ResponseEntity<List<IngredientDTO>> addIngredientsToFridge(
+    public ResponseEntity<List<IngredientDTO>> addToFridge(
             @PathVariable Long userId,
             @RequestBody IngredientIdsDTO request) {
-        return new ResponseEntity<>(fridgeService.addIngredientsToFridge(userId, request.getIngredientIds()), HttpStatus.OK);
+
+        List<Ingredient> ingredients = fridgeService.addToFridge(userId, request.getIngredientIds());
+
+        List<IngredientDTO> ingredientDTOs = ingredients.stream()
+                .map(IngredientDTO::toResponse)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ingredientDTOs);
     }
 
-    @DeleteMapping("{userId}/remove")
-    public ResponseEntity<List<IngredientDTO>> removeIngredientsFromFridge(
+    @PutMapping("{userId}/remove")
+    public ResponseEntity<List<IngredientDTO>> removeFromFridge(
             @PathVariable Long userId,
             @RequestBody IngredientIdsDTO request) {
-        return new ResponseEntity<>(fridgeService.removeIngredientsFromFridge(userId, request.getIngredientIds()), HttpStatus.OK);
+
+        List<Ingredient> ingredients = fridgeService.removeFromFridge(userId, request.getIngredientIds());
+
+        List<IngredientDTO> ingredientDTOs = ingredients.stream()
+                .map(IngredientDTO::toResponse)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ingredientDTOs);
     }
+
 }
