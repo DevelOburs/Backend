@@ -1,14 +1,14 @@
 package com.fridgify.recipe_api.service;
 
 import com.fridgify.recipe_api.common.exception.ResourceNotFoundException;
-import com.fridgify.recipe_api.model.Ingredient;
-import com.fridgify.recipe_api.model.Recipe;
-import com.fridgify.recipe_api.model.RecipeIngredient;
+import com.fridgify.recipe_api.model.*;
 import com.fridgify.recipe_api.repository.IngredientRepository;
 import com.fridgify.recipe_api.repository.RecipeIngredientRepository;
-import com.fridgify.recipe_api.model.RecipeCategory;
 import com.fridgify.recipe_api.repository.RecipeRepository;
+import com.fridgify.recipe_api.repository.UserRepository;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,19 +29,21 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final IngredientRepository ingredientRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
+    private final UserRepository userRepository;
 
-    public RecipeService(RecipeRepository recipeRepository, IngredientRepository ingredientRepository, RecipeIngredientRepository recipeIngredientRepository) {
+    public RecipeService(RecipeRepository recipeRepository, IngredientRepository ingredientRepository, RecipeIngredientRepository recipeIngredientRepository, UserRepository userRepository) {
         this.recipeRepository = recipeRepository;
         this.ingredientRepository = ingredientRepository;
         this.recipeIngredientRepository = recipeIngredientRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Recipe> getAllRecipes(Integer limit, Integer pageNumber, RecipeCategory category,
                                       Integer minCookingTime, Integer maxCookingTime,
-                                      Integer minCalories, Integer maxCalories) {
+                                      Integer minCalories, Integer maxCalories, Long userId) {
         Pageable pageable = (limit != null && pageNumber != null) ? PageRequest.of(pageNumber, limit) : Pageable.unpaged();
 
-        Specification<Recipe> spec = filterByCriteria(category, minCookingTime, maxCookingTime, minCalories, maxCalories);
+        Specification<Recipe> spec = filterByCriteria(category, minCookingTime, maxCookingTime, minCalories, maxCalories, userId);
 
         Page<Recipe> recipePage = recipeRepository.findAll(spec, pageable);
 
@@ -135,7 +137,7 @@ public class RecipeService {
         return List.of(RecipeCategory.values());
     }
 
-    public static Specification<Recipe> filterByCriteria(RecipeCategory category, Integer minCookingTime, Integer maxCookingTime, Integer minCalories, Integer maxCalories) {
+    public Specification<Recipe> filterByCriteria(RecipeCategory category, Integer minCookingTime, Integer maxCookingTime, Integer minCalories, Integer maxCalories, Long userId) {
         return (root, query, criteriaBuilder) -> {
             List<jakarta.persistence.criteria.Predicate> predicates = new ArrayList<>();
 
@@ -155,7 +157,30 @@ public class RecipeService {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("calories"), maxCalories));
             }
 
+            if (userId != null) {
+                predicates.add(filterByFridge(userId).toPredicate(root, query, criteriaBuilder));
+            }
+
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+    private Specification<Recipe> filterByFridge(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+
+        List<Long> fridgeIngredientIds = user.getFridgeIngredients().stream()
+                .map(Ingredient::getId)
+                .collect(Collectors.toList());
+
+        return (root, query, criteriaBuilder) -> {
+            Subquery<Long> subquery = query.subquery(Long.class);
+            Root<RecipeIngredient> recipeIngredientRoot = subquery.from(RecipeIngredient.class);
+
+            subquery.select(recipeIngredientRoot.get("recipe").get("id"))
+                    .where(criteriaBuilder.not(recipeIngredientRoot.get("ingredient").get("id").in(fridgeIngredientIds)));
+
+            return criteriaBuilder.not(root.get("id").in(subquery));
         };
     }
 
