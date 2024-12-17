@@ -49,6 +49,8 @@ public class AuthController {
                     .token(token)
                     .username(response.getBody().get().getUsername())
                     .email(response.getBody().get().getEmail())
+                    .firstName(response.getBody().get().getFirstName())
+                    .lastName(response.getBody().get().getLastName())
                     .build();
             return ResponseEntity.ok(tokenResponse);
         } catch (FeignException.FeignClientException.BadRequest e) {
