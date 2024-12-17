@@ -71,7 +71,7 @@ public class UserController {
 
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or @userService.isUserTryingToDeleteOwnProfile(#id, authentication.name)")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         String response = userService.deleteUserById(id);

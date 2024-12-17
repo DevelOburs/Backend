@@ -13,7 +13,6 @@ import org.webjars.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -145,5 +144,10 @@ public class UserService {
         userRepository.deleteById(id);
 
         return "user deleted successfully with id: " + id;
+    }
+
+    public boolean isUserTryingToDeleteOwnProfile(Long userId, String username) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+        return user.getUsername().equals(username);
     }
 }
