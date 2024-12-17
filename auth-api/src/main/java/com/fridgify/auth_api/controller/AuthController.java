@@ -43,7 +43,7 @@ public class AuthController {
             ResponseEntity<Optional<ResponseUserDTO>> response = userServiceClient.loginUser(loginUserDTO);
             assert Objects.requireNonNull(response.getBody()).isPresent();
             // Generate JWT token
-            String token = jwtUtil.generateToken(loginUserDTO.getUsername());
+            String token = jwtUtil.generateToken(loginUserDTO.getUsername(), response.getBody().get().getRoles());
             TokenDTO tokenResponse = TokenDTO.builder()
                     .userId(response.getBody().get().getUserId())
                     .token(token)

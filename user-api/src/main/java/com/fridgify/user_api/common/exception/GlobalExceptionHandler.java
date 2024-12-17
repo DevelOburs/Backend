@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -37,6 +38,18 @@ public class GlobalExceptionHandler {
         responseBody.put("path", request.getDescription(false));
 
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+    }
+
+    // Handle AccessDenied Exception
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("status", HttpStatus.FORBIDDEN.value());
+        responseBody.put("error", "You do not have the required permissions");
+        responseBody.put("message", ex.getMessage());
+        responseBody.put("path", request.getDescription(false));
+
+        return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);
     }
 
     // Handle Generic Exception
