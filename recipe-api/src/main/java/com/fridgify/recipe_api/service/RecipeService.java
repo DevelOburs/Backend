@@ -40,10 +40,11 @@ public class RecipeService {
 
     public List<Recipe> getAllRecipes(Integer limit, Integer pageNumber, RecipeCategory category,
                                       Integer minCookingTime, Integer maxCookingTime,
-                                      Integer minCalories, Integer maxCalories, Long userId) {
+                                      Integer minCalories, Integer maxCalories, String recipeName, Long userId) {
         Pageable pageable = (limit != null && pageNumber != null) ? PageRequest.of(pageNumber, limit) : Pageable.unpaged();
 
-        Specification<Recipe> spec = filterByCriteria(category, minCookingTime, maxCookingTime, minCalories, maxCalories, userId);
+        Specification<Recipe> spec = filterByCriteria(
+                category, minCookingTime, maxCookingTime, minCalories, maxCalories, recipeName, userId);
 
         Page<Recipe> recipePage = recipeRepository.findAll(spec, pageable);
 
@@ -137,7 +138,9 @@ public class RecipeService {
         return List.of(RecipeCategory.values());
     }
 
-    public Specification<Recipe> filterByCriteria(RecipeCategory category, Integer minCookingTime, Integer maxCookingTime, Integer minCalories, Integer maxCalories, Long userId) {
+    public Specification<Recipe> filterByCriteria(
+            RecipeCategory category, Integer minCookingTime, Integer maxCookingTime,
+            Integer minCalories, Integer maxCalories, String recipeName, Long userId) {
         return (root, query, criteriaBuilder) -> {
             List<jakarta.persistence.criteria.Predicate> predicates = new ArrayList<>();
 
@@ -159,6 +162,12 @@ public class RecipeService {
 
             if (userId != null) {
                 predicates.add(filterByFridge(userId).toPredicate(root, query, criteriaBuilder));
+            }
+
+            if (recipeName != null) {
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(
+                        root.get("name")), "%" + recipeName.toLowerCase() + "%")
+                );
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
