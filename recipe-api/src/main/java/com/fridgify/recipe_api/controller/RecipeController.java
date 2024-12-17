@@ -36,10 +36,12 @@ public class RecipeController {
             @RequestParam(value = "minCookingTime", required = false) Integer minCookingTime,
             @RequestParam(value = "maxCookingTime", required = false) Integer maxCookingTime,
             @RequestParam(value = "minCalories", required = false) Integer minCalories,
-            @RequestParam(value = "maxCalories", required = false) Integer maxCalories) {
+            @RequestParam(value = "maxCalories", required = false) Integer maxCalories,
+            @RequestParam(value = "search", required = false) String recipeName) {
         // Fetch recipes with pagination
         List<Recipe> recipes = recipeService.getAllRecipes(
-                limit, pageNumber, category, minCookingTime, maxCookingTime, minCalories, maxCalories, null
+                limit, pageNumber, category, minCookingTime, maxCookingTime,
+                minCalories, maxCalories, recipeName, null
         );
         // Convert Recipe to RecipeDTO
         List<RecipeDTO> recipeDTOs = recipes.stream()
@@ -58,10 +60,12 @@ public class RecipeController {
             @RequestParam(value = "minCookingTime", required = false) Integer minCookingTime,
             @RequestParam(value = "maxCookingTime", required = false) Integer maxCookingTime,
             @RequestParam(value = "minCalories", required = false) Integer minCalories,
-            @RequestParam(value = "maxCalories", required = false) Integer maxCalories) {
+            @RequestParam(value = "maxCalories", required = false) Integer maxCalories,
+            @RequestParam(value = "name", required = false) String recipeName) {
 
         List<Recipe> recipes = recipeService.getAllRecipes(
-                limit, pageNumber, category, minCookingTime, maxCookingTime, minCalories, maxCalories, userId
+                limit, pageNumber, category, minCookingTime,
+                maxCookingTime, minCalories, maxCalories, recipeName, userId
         );
 
         List<RecipeDTO> recipeDTOs = recipes.stream()
