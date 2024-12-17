@@ -1,21 +1,29 @@
 package com.fridgify.user_api.service;
 
 import com.fridgify.user_api.dto.*;
+import com.fridgify.user_api.model.Role;
 import com.fridgify.user_api.model.User;
+import com.fridgify.user_api.repository.RoleRepository;
 import com.fridgify.user_api.repository.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -41,6 +49,10 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(registerUserDTO.getPassword()));
         user.setFirstName(registerUserDTO.getFirstName());
         user.setLastName(registerUserDTO.getLastName());
+        List<Role> roles = new ArrayList<>();
+        Role userRole = roleRepository.findByName("USER").orElse(new Role("USER"));
+        roles.add(userRole);
+        user.setRoles(roles);
         userRepository.save(user);
 
         return Optional.ofNullable(ResponseUserDTO.builder()
@@ -48,7 +60,7 @@ public class UserService {
                         .email(registerUserDTO.getEmail())
                         .username(registerUserDTO.getUsername())
                         .firstName(registerUserDTO.getFirstName())
-                        .lastName(registerUserDTO.getLastName())
+                        .roles(List.of("USER"))
                         .build());
     }
 
@@ -67,6 +79,7 @@ public class UserService {
                     .username(existing_user.get().getUsername())
                     .firstName(existing_user.get().getFirstName())
                     .lastName(existing_user.get().getLastName())
+                    .roles(existing_user.get().getRoles().stream().map(Role::getName).toList())
                     .build());
         } else {
             return Optional.empty();
@@ -120,5 +133,17 @@ public class UserService {
                 .firstName(user.get().getFirstName())
                 .lastName(user.get().getLastName())
                 .build());
+    }
+
+    public String deleteUserById(Long id) {
+
+        Optional<User> user = userRepository.findById(id);
+        if(user.isEmpty()){
+            throw new NotFoundException("User not found");
+        }
+
+        userRepository.deleteById(id);
+
+        return "user deleted successfully with id: " + id;
     }
 }

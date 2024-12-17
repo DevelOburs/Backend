@@ -2,6 +2,8 @@ package com.fridgify.user_api.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @Data
 @NoArgsConstructor
@@ -14,4 +16,5 @@ public class ResponseUserDTO {
     private String email;
     private String firstName;
     private String lastName;
+    private List<String> roles;
 }
