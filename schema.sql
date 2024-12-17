@@ -101,3 +101,16 @@ CREATE TABLE recipe_like (
     FOREIGN KEY (recipe_id) REFERENCES recipe(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
+
+CREATE TABLE role (
+      id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+      name VARCHAR(50)
+);
+
+CREATE TABLE user_role (
+      user_id BIGINT UNSIGNED NOT NULL,
+      role_id BIGINT UNSIGNED NOT NULL,
+      PRIMARY KEY (role_id, user_id),
+      FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE,
+      FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+);
