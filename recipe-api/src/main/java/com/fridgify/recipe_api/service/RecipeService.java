@@ -9,6 +9,7 @@ import com.fridgify.recipe_api.repository.UserRepository;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
+import jakarta.ws.rs.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -195,5 +196,10 @@ public class RecipeService {
 
     public Optional<Long> getCountRecipesOfUser(Long userId) {
         return recipeRepository.countRecipesByUserId(userId);
+    }
+
+    public boolean isUserOwnerOfRecipe(Long recipeId, String username) {
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new NotFoundException("Recipe not found"));
+        return recipe.getUser().getUsername().equals(username);
     }
 }
