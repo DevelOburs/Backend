@@ -39,9 +39,31 @@ public class RecipeController {
             @RequestParam(value = "maxCalories", required = false) Integer maxCalories) {
         // Fetch recipes with pagination
         List<Recipe> recipes = recipeService.getAllRecipes(
-                limit, pageNumber, category, minCookingTime, maxCookingTime, minCalories, maxCalories
+                limit, pageNumber, category, minCookingTime, maxCookingTime, minCalories, maxCalories, null
         );
         // Convert Recipe to RecipeDTO
+        List<RecipeDTO> recipeDTOs = recipes.stream()
+                .map(RecipeDTO::toResponse)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(recipeDTOs);
+    }
+
+    @GetMapping("/personalized/{userId}")
+    public ResponseEntity<List<RecipeDTO>> getAllRecipes(
+            @PathVariable Long userId,
+            @RequestParam(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "category", required = false) RecipeCategory category,
+            @RequestParam(value = "minCookingTime", required = false) Integer minCookingTime,
+            @RequestParam(value = "maxCookingTime", required = false) Integer maxCookingTime,
+            @RequestParam(value = "minCalories", required = false) Integer minCalories,
+            @RequestParam(value = "maxCalories", required = false) Integer maxCalories) {
+
+        List<Recipe> recipes = recipeService.getAllRecipes(
+                limit, pageNumber, category, minCookingTime, maxCookingTime, minCalories, maxCalories, userId
+        );
+
         List<RecipeDTO> recipeDTOs = recipes.stream()
                 .map(RecipeDTO::toResponse)
                 .collect(Collectors.toList());
