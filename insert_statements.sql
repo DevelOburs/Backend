@@ -7124,3 +7124,11 @@ WHERE user_id IS NULL;
 
 DELETE FROM recipe
 WHERE category != BINARY UPPER(category);
+
+INSERT INTO role (name) VALUES ('ADMIN');
+INSERT INTO role (name) VALUES ('USER');
+
+INSERT INTO user (username, email, password, first_name, last_name)
+VALUES ('admin', 'admin', '$2a$10$I9usq/iMj1lfPVGik1n2ceiDeD7MtCYnu4/.RwuiYRuZWYkj5eaim', 'admin', 'admin');
+
+INSERT INTO user_role (user_id, role_id) VALUES (12, 1);  # check admin id

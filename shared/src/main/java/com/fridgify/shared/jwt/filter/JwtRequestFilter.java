@@ -1,7 +1,10 @@
 package com.fridgify.shared.jwt.filter;
 
 import com.fridgify.shared.jwt.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -11,7 +14,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class JwtRequestFilter extends OncePerRequestFilter {
 
@@ -35,13 +39,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Normally, you'd load the user details here and set the authentication
             if (jwtUtil.validateToken(jwt, username)) {
-                // Create an Authentication object and set it in the context
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        username, null, new ArrayList<>());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                Claims claims = jwtUtil.extractAllClaims(jwt);
+                List<String> roles = claims.get("roles", List.class);
+
+                List<GrantedAuthority> authorities = roles.stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        .collect(Collectors.toList());
+
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(username, null, authorities);
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
         chain.doFilter(request, response);
