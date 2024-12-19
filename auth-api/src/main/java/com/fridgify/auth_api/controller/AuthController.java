@@ -43,7 +43,7 @@ public class AuthController {
             ResponseEntity<Optional<ResponseUserDTO>> response = userServiceClient.loginUser(loginUserDTO);
             assert Objects.requireNonNull(response.getBody()).isPresent();
             // Generate JWT token
-            String token = jwtUtil.generateToken(loginUserDTO.getUsername());
+            String token = jwtUtil.generateToken(loginUserDTO.getUsername(), response.getBody().get().getRoles());
             TokenDTO tokenResponse = TokenDTO.builder()
                     .userId(response.getBody().get().getUserId())
                     .token(token)
@@ -51,6 +51,7 @@ public class AuthController {
                     .email(response.getBody().get().getEmail())
                     .firstName(response.getBody().get().getFirstName())
                     .lastName(response.getBody().get().getLastName())
+                    .roles(response.getBody().get().getRoles())
                     .build();
             return ResponseEntity.ok(tokenResponse);
         } catch (FeignException.FeignClientException.BadRequest e) {

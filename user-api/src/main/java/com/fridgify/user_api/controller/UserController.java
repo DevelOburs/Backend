@@ -3,6 +3,7 @@ import com.fridgify.user_api.dto.*;
 import com.fridgify.user_api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,5 +69,12 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or @userService.isUserTryingToDeleteOwnProfile(#id, authentication.name)")
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        String response = userService.deleteUserById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
