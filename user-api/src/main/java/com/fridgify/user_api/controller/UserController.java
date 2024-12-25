@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -77,4 +78,12 @@ public class UserController {
         String response = userService.deleteUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/list")
+    public ResponseEntity<List<ResponseUserDTO>> listUsers() {
+        List<ResponseUserDTO> response = userService.listUsers();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }
