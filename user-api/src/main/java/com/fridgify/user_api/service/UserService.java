@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -144,6 +146,24 @@ public class UserService {
         userRepository.deleteById(id);
 
         return "user deleted successfully with id: " + id;
+    }
+
+    public List<ResponseUserDTO> listUsers() {
+
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .map(user -> new ResponseUserDTO(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        Collections.singletonList(user.getRoles().stream()
+                                .map(Role::getName)
+                                .collect(Collectors.joining(", ")))
+                ))
+                .toList();
     }
 
     public boolean isUserTryingToDeleteOwnProfile(Long userId, String username) {
