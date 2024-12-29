@@ -12,3 +12,20 @@ api-urls:
   user-api: http://localhost:8082/actuator/health
   recipe-api: http://localhost:8081/actuator/health
   auth-api: http://localhost:8083/actuator/health
+
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:3000"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+        add-to-simple-url-handler-mapping: true
