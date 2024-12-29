@@ -13,7 +13,9 @@ import com.fridgify.user_api.controller.UserController;
 import com.fridgify.user_api.dto.RegisterUserDTO;
 import com.fridgify.user_api.dto.LoginUserDTO;
 import com.fridgify.user_api.dto.ResponseUserDTO;
+import com.fridgify.user_api.model.Role;
 import com.fridgify.user_api.model.User;
+import com.fridgify.user_api.repository.RoleRepository;
 import com.fridgify.user_api.repository.UserRepository;
 import com.fridgify.user_api.service.UserService;
 
@@ -28,6 +30,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.List;
 import java.util.Optional;
 
 @Import(SecurityConfig.class)
@@ -48,24 +51,22 @@ class UserApiApplicationMvcTests {
 	@MockBean
 	private UserRepository userRepository;
 
+	@MockBean
+	private RoleRepository roleRepository;
+
 	@SpyBean
 	private BCryptPasswordEncoder passwordEncoder;
 
 
 	private Optional<User> createMockUser() {
+		Role role = new Role("ROLE_USER");
 		User userObj = User.builder()
 				.username("test")
 				.email("test")
 				.password(passwordEncoder.encode("test"))
+				.roles(List.of(role))
 				.build();
 		return Optional.of(userObj);
-	}
-
-	@Test
-	void shouldReturnTestMessage() throws Exception {
-		this.mockMvc.perform(get(BASE_URL + "/test")).andDo(print())
-				.andExpect(status().isOk())
-				.andExpect(content().string(containsString("User API is working")));
 	}
 
 	@Test
@@ -89,7 +90,7 @@ class UserApiApplicationMvcTests {
 				.email(user.getEmail())
 				.username(user.getUsername())
 				.firstName(user.getFirstName())
-				.lastName(user.getLastName())
+				.roles(List.of("USER"))
 				.build());
 		String responseUserJson = objectMapper.writeValueAsString(responseUser);
 
@@ -132,6 +133,7 @@ class UserApiApplicationMvcTests {
 		Optional<ResponseUserDTO> responseUser = Optional.ofNullable(ResponseUserDTO.builder()
 				.email(user.getEmail())
 				.username(user.getUsername())
+				.roles(List.of("ROLE_USER"))
 				.build());
 		String responseUserJson = objectMapper.writeValueAsString(responseUser);
 

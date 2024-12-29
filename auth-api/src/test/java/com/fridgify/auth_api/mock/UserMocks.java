@@ -8,13 +8,16 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class UserMocks {
     public static void setupMockLoginResponse(WireMockServer mockService) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
+        List<String> roles = new ArrayList<>();
         ResponseUserDTO responseUser = new ResponseUserDTO(
-                "test", "test", "test", "test");
+                1L, "test", "test", "test", "test", roles);
         String jsonResponse = objectMapper.writeValueAsString(responseUser);
 
         mockService.stubFor(WireMock.post(WireMock.urlEqualTo("/user-api/login"))
