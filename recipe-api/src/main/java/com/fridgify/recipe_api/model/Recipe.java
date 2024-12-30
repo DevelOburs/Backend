@@ -1,5 +1,6 @@
 package com.fridgify.recipe_api.model;
 
+import com.fridgify.recipe_api.dto.IngredientDTO;
 import com.fridgify.recipe_api.dto.RecipeDTO;
 import jakarta.persistence.*;
 import lombok.*;
@@ -80,7 +81,7 @@ public class Recipe {
                 .cookingTime(this.getCookingTime())
                 .ingredients(this.getIngredients().stream()
                         .map(RecipeIngredient::getIngredient)
-                        .map(Ingredient::getName)
+                        .map(IngredientDTO::toResponse)
                         .collect(Collectors.toList()))
                 .build();
     }
