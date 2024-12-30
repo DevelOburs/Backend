@@ -32,7 +32,7 @@ public class RecipeDTO {
     private Long likeCount;
     private Long commentCount;
     private Long saveCount;
-    private List<String> ingredients;
+    private List<IngredientDTO> ingredients;
     private String imageUrl;
     private RecipeCategory category;
     private Long calories;
@@ -73,8 +73,7 @@ public class RecipeDTO {
                 .calories(recipe.getCalories())
                 .cookingTime(recipe.getCookingTime())
                 .ingredients(recipe.getIngredients().stream()
-                        .map(RecipeIngredient::getIngredient)
-                        .map(Ingredient::getName)
+                        .map(RecipeIngredient::getIngredientDTO)
                         .collect(Collectors.toList()))
                 .build();
     }

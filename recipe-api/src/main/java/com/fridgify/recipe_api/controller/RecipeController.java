@@ -96,9 +96,10 @@ public class RecipeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable Long id, @RequestBody RecipeDTO recipeDTO) {
+    public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable("id") Long id, @RequestBody RecipeDTO recipeDTO) {
+        // Build the updated Recipe entity from the incoming DTO
         Recipe updatedRecipe = Recipe.builder()
-                .id(id)
+                .id(id) // Ensure the ID is set from the path variable
                 .name(recipeDTO.getName())
                 .description(recipeDTO.getDescription())
                 .imageUrl(recipeDTO.getImageUrl())
