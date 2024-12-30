@@ -3,8 +3,10 @@ package com.fridgify.recipe_api.service;
 import com.fridgify.recipe_api.dto.RecipeCommentDTO;
 import com.fridgify.recipe_api.model.Recipe;
 import com.fridgify.recipe_api.model.RecipeComment;
+import com.fridgify.recipe_api.model.User;
 import com.fridgify.recipe_api.repository.RecipeCommentRepository;
 import com.fridgify.recipe_api.repository.RecipeRepository;
+import com.fridgify.recipe_api.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -17,11 +19,13 @@ public class RecipeCommentService {
 
     private final RecipeCommentRepository recipeCommentRepository;
     private final RecipeRepository recipeRepository;
+    private final UserRepository userRepository;
 
     public RecipeCommentService(RecipeCommentRepository recipeCommentRepository,
-                                RecipeRepository recipeRepository) {
+                                RecipeRepository recipeRepository, UserRepository userRepository) {
         this.recipeCommentRepository = recipeCommentRepository;
         this.recipeRepository = recipeRepository;
+        this.userRepository = userRepository;
     }
     @Transactional
     public RecipeCommentDTO addComment(Long recipeId, Long userId, String comment) {
@@ -36,6 +40,7 @@ public class RecipeCommentService {
                 .id(savedComment.getId())
                 .recipeId(savedComment.getRecipeId())
                 .userId(savedComment.getUserId())
+                .username(userRepository.findById(savedComment.getUserId()).map(User::getUsername).orElse(""))
                 .comment(savedComment.getComment())
                 .createdAt(savedComment.getCreatedAt()).build();
     }
@@ -47,6 +52,7 @@ public class RecipeCommentService {
                         .id(comment.getId())
                         .recipeId(comment.getRecipeId())
                         .userId(comment.getUserId())
+                        .username(userRepository.findById(comment.getUserId()).map(User::getUsername).orElse(""))
                         .comment(comment.getComment())
                         .createdAt(comment.getCreatedAt())
                         .build()
@@ -54,6 +60,7 @@ public class RecipeCommentService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteComment(Long commentId, Long userId) throws IllegalAccessException {
         // Find the comment by ID
         RecipeComment comment = recipeCommentRepository.findById(commentId)
@@ -64,11 +71,13 @@ public class RecipeCommentService {
             throw new IllegalAccessException("User not authorized to delete this comment");
         }
 
+        Long recipeId = comment.getRecipeId();
+
         // Delete the comment
         recipeCommentRepository.delete(comment);
 
         // Update the comment count for the recipe
-        updateCommentCount(comment.getRecipeId(), -1);
+        updateCommentCount(recipeId, -1);
     }
 
     private void updateCommentCount(Long recipeId, int change) {
