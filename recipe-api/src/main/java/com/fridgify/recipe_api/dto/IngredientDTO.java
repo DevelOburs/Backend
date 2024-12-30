@@ -16,6 +16,14 @@ public class IngredientDTO {
     private String name;
     private IngredientCategory category;
     private String imageUrl;
+    private String quantity;
+
+    public IngredientDTO(long id, String name, IngredientCategory category, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.imageUrl = imageUrl;
+    }
 
     public IngredientDTO(Ingredient ingredient) {
         if (ingredient == null) {

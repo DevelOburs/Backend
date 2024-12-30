@@ -1,6 +1,7 @@
 package com.fridgify.recipe_api.service;
 
 import com.fridgify.recipe_api.common.exception.ResourceNotFoundException;
+import com.fridgify.recipe_api.dto.IngredientDTO;
 import com.fridgify.recipe_api.model.*;
 import com.fridgify.recipe_api.repository.IngredientRepository;
 import com.fridgify.recipe_api.repository.RecipeIngredientRepository;
@@ -57,19 +58,19 @@ public class RecipeService {
     }
 
     @Transactional
-    public Recipe createRecipe(Recipe recipe, List<String> ingredients) {
+    public Recipe createRecipe(Recipe recipe, List<IngredientDTO> ingredients) {
         Recipe savedRecipe = recipeRepository.save(recipe);
 
         List<RecipeIngredient> recipeIngredients = ingredients.stream()
-                .map(ingredientName -> {
-                    Ingredient ingredient = ingredientRepository.findByNameCaseSensitive(ingredientName)
-                            .orElseThrow(() -> new RuntimeException("Ingredient not found: " + ingredientName));
+                .map(ingredient_ -> {
+                    Ingredient ingredient = ingredientRepository.findByNameCaseSensitive(ingredient_.getName())
+                            .orElseThrow(() -> new RuntimeException("Ingredient not found: " + ingredient_.getName()));
                     return new RecipeIngredient(
                             recipe.getId(),
                             ingredient.getId(),
                             recipe,
                             ingredient,
-                            "default quantity");
+                            ingredient_.getQuantity());
                 })
                 .collect(Collectors.toList());
 
@@ -79,7 +80,7 @@ public class RecipeService {
     }
 
     @Transactional
-    public Recipe updateRecipe(Long id, Recipe updatedRecipe, List<String> ingredients) {
+    public Recipe updateRecipe(Long id, Recipe updatedRecipe, List<IngredientDTO> ingredients) {
         Recipe existingRecipe = recipeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recipe not found with id " + id));
         if (updatedRecipe.getName() != null) {
             existingRecipe.setName(updatedRecipe.getName());
@@ -102,15 +103,15 @@ public class RecipeService {
 
         if (ingredients != null) {
             List<RecipeIngredient> recipeIngredients = ingredients.stream()
-                    .map(ingredientName -> {
-                        Ingredient ingredient = ingredientRepository.findByNameCaseSensitive(ingredientName)
-                                .orElseThrow(() -> new RuntimeException("Ingredient not found: " + ingredientName));
+                    .map(ingredient_ -> {
+                        Ingredient ingredient = ingredientRepository.findByNameCaseSensitive(ingredient_.getName())
+                                .orElseThrow(() -> new RuntimeException("Ingredient not found: " + ingredient_.getName()));
                         return new RecipeIngredient(
                                 existingRecipe.getId(),
                                 ingredient.getId(),
                                 existingRecipe,
                                 ingredient,
-                                "default quantity");
+                                ingredient_.getQuantity());
                     })
                     .toList();
             existingRecipe.updateIngredients(recipeIngredients);

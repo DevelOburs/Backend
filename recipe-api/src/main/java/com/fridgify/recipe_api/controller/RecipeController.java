@@ -54,7 +54,7 @@ public class RecipeController {
 
     @GetMapping("/personalized/{userId}")
     public ResponseEntity<List<RecipeDTO>> getAllRecipes(
-            @PathVariable Long userId,
+            @PathVariable("userId") Long userId,
             @RequestParam(value = "limit", required = false) Integer limit,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "category", required = false) RecipeCategory category,
@@ -77,7 +77,7 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RecipeDTO> getRecipeById(@PathVariable Long id) {
+    public ResponseEntity<RecipeDTO> getRecipeById(@PathVariable("id") Long id) {
         Recipe recipe = recipeService.getRecipeById(id);
         RecipeDTO recipeDTO = RecipeDTO.toResponse(recipe);
         return ResponseEntity.ok(recipeDTO);
@@ -96,9 +96,10 @@ public class RecipeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable Long id, @RequestBody RecipeDTO recipeDTO) {
+    public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable("id") Long id, @RequestBody RecipeDTO recipeDTO) {
+        // Build the updated Recipe entity from the incoming DTO
         Recipe updatedRecipe = Recipe.builder()
-                .id(id)
+                .id(id) // Ensure the ID is set from the path variable
                 .name(recipeDTO.getName())
                 .description(recipeDTO.getDescription())
                 .imageUrl(recipeDTO.getImageUrl())
@@ -115,13 +116,13 @@ public class RecipeController {
 
     @PreAuthorize("hasRole('ADMIN') or @recipeService.isUserOwnerOfRecipe(#id, authentication.name)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteRecipe(@PathVariable("id") Long id) {
         recipeService.deleteRecipe(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/getRecipes/{userId}")
-    public ResponseEntity<?> getRecipesByUserId(@PathVariable Long userId,
+    public ResponseEntity<?> getRecipesByUserId(@PathVariable("id") Long userId,
                                                               @RequestParam(value = "limit", required = false) Integer limit,
                                                               @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
         try {

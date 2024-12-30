@@ -1,5 +1,6 @@
 package com.fridgify.recipe_api.model;
 
+import com.fridgify.recipe_api.dto.IngredientDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,6 +33,17 @@ public class RecipeIngredient {
         this.recipe = recipe;
         this.ingredient = ingredient;
         this.quantity = quantity;
+    }
+
+
+    public IngredientDTO getIngredientDTO() {
+        return IngredientDTO.builder()
+                .id(this.ingredient.getId())
+                .name(this.ingredient.getName())
+                .category(this.ingredient.getCategory())
+                .imageUrl(this.ingredient.getImageUrl())
+                .quantity(this.quantity)
+                .build();
     }
 
     @Embeddable
