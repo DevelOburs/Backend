@@ -116,7 +116,13 @@ public class FridgeService {
     }
 
     private Specification<Ingredient> notInFridge(List<Long> fridgeIngredientIds) {
-        return (root, query, cb) -> cb.not(root.get("id").in(fridgeIngredientIds));
+        return (root, query, cb) -> {
+            if (fridgeIngredientIds == null || fridgeIngredientIds.isEmpty()) {
+                // If the list is empty, no filtering on this condition
+                return cb.conjunction(); // Always true
+            }
+            return cb.not(root.get("id").in(fridgeIngredientIds));
+        };
     }
 
     private Specification<Ingredient> byCategoryIfProvided(IngredientCategory category) {
