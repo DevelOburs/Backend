@@ -13,7 +13,7 @@ public class RecipeCommentDTO {
     private Long id;
     private Long recipeId;
     private Long userId;
+    private String username;
     private String comment;
     private Date createdAt;
-
 }
