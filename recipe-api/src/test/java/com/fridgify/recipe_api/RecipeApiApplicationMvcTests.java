@@ -36,9 +36,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * @author daryl
- */
 @ExtendWith(SpringExtension.class)
 @WebMvcTest({RecipeController.class})
 @AutoConfigureMockMvc(addFilters = false)
