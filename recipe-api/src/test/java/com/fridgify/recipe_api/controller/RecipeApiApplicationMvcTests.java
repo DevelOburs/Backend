@@ -1,23 +1,9 @@
-package com.fridgify.recipe_api;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+package com.fridgify.recipe_api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fridgify.recipe_api.common.exception.ResourceNotFoundException;
-import com.fridgify.recipe_api.controller.RecipeController;
 import com.fridgify.recipe_api.dto.RecipeDTO;
-import com.fridgify.recipe_api.model.Ingredient;
-import com.fridgify.recipe_api.model.IngredientCategory;
-import com.fridgify.recipe_api.model.Recipe;
-import com.fridgify.recipe_api.model.RecipeCategory;
-import com.fridgify.recipe_api.model.RecipeIngredient;
-import com.fridgify.recipe_api.model.User;
+import com.fridgify.recipe_api.model.*;
 import com.fridgify.recipe_api.service.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +21,12 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest({RecipeController.class})
