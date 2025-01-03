@@ -1,4 +1,4 @@
-package com.fridgify.recipe_api;
+package com.fridgify.recipe_api.controller;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fridgify.recipe_api.common.exception.ResourceNotFoundException;
-import com.fridgify.recipe_api.controller.RecipeController;
 import com.fridgify.recipe_api.dto.RecipeDTO;
 import com.fridgify.recipe_api.model.Ingredient;
 import com.fridgify.recipe_api.model.IngredientCategory;

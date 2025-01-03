@@ -176,7 +176,7 @@ public class RecipeService {
         };
     }
 
-    private Specification<Recipe> filterByFridge(Long userId) {
+    public Specification<Recipe> filterByFridge(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
 

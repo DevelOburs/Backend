@@ -1,7 +1,6 @@
-package com.fridgify.recipe_api;
+package com.fridgify.recipe_api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fridgify.recipe_api.controller.RecipeCommentController;
 import com.fridgify.recipe_api.dto.RecipeCommentDTO;
 import com.fridgify.recipe_api.dto.RecipeCreateCommentDTO;
 import com.fridgify.recipe_api.service.RecipeCommentService;
