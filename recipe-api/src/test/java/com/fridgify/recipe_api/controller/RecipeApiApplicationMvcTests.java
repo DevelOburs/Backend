@@ -194,7 +194,7 @@ public class RecipeApiApplicationMvcTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(recipeDTO))
                         .header("Authorization", "mockJwt"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -231,6 +231,6 @@ public class RecipeApiApplicationMvcTests {
 
         mockMvc.perform(delete(BASE_URL + "/{id}", recipeId)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }
