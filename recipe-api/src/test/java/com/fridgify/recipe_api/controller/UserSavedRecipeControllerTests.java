@@ -1,7 +1,6 @@
-package com.fridgify.recipe_api;
+package com.fridgify.recipe_api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fridgify.recipe_api.controller.UserSavedRecipeController;
 import com.fridgify.recipe_api.service.UserSavedRecipeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
