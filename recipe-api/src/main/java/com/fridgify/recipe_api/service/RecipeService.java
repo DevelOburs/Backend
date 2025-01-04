@@ -184,6 +184,10 @@ public class RecipeService {
                 .map(Ingredient::getId)
                 .collect(Collectors.toList());
 
+        if (fridgeIngredientIds.isEmpty()) {
+            return (root, query, criteriaBuilder) -> criteriaBuilder.disjunction();
+        }
+
         return (root, query, criteriaBuilder) -> {
             Subquery<Long> subquery = query.subquery(Long.class);
             Root<RecipeIngredient> recipeIngredientRoot = subquery.from(RecipeIngredient.class);
