@@ -58,6 +58,6 @@ public class RecipeLikeControllerTests {
         mockMvc.perform(post(BASE_URL + "/{recipeId}", recipeId)
                         .param("userId", userId.toString())
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }
